@@ -1,11 +1,7 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-#import pdb 
+x = {"one": "1", "two" : "2"}
+y = {"one": "1", "two" : "2", "three" : "3"}
 
-driver = webdriver.Chrome()
-driver.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage.html")
-count = 0
-for elem in driver.find_elements_by_class_name("application-label"):
-	print(elem.text.split("\n")[0])
-#pdb.set_trace()
-driver.close()
+xSet = set(x)
+ySet = set(y)
+if xSet.issubset(ySet) == True:
+	print("Yes!")
