@@ -22,7 +22,8 @@ class Agent:
     Returns questionPair, a dictionary containing questions and its corresponding webelement
     """
     def getQuestionDict(self):
-        self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage.html")
+        #self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage.html")
+        self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage3.html")
         questions = self.driver.find_elements_by_class_name("application-question")
         questionPair = {}
         for question in questions:
@@ -67,16 +68,13 @@ class LeverAgent(Agent):
                     self.radioInput(inputAnswer, userData[key])
                 elif inputType == "checkbox": 
                     self.checkboxInput(inputAnswer, userData[key])             
-            
-                #textareaQuestion = inputAnswer[0].get_attribute("placeholder")
-                #print(textareaQuestion)  
-                #textareaAnswer[0].send_keys(userData[key])
             elif len(selectAnswer) != 0: 
                 select_element = Select(selectAnswer[0])
                 select_element.select_by_visible_text(userData[key])
-            else: 
-                self.checkForShortAnswers(textareaAnswer)
-           
+            elif len(textareaAnswer) == 0: 
+                return False
+            elif len(textareaAnswer) == 1:
+                self.checkForShortAnswers()
 
     """
     FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
@@ -100,19 +98,12 @@ class LeverAgent(Agent):
             choices = [choice.get_attribute("value") for choice in inputAnswer]
             index = choices.index(userAnswer)
             self.driver.execute_script("arguments[0].click();", inputAnswer[index])
-    
+   
     """
-    FUNCTION: Returns True if there are short answer questions, and breaks the function otherwise 
-    checker: textareaAnswer from autoInputQuestion(); 1 if there are questions, 0 otherwise
-    
+    FUNCTION: Returns "True" if there are short answers 
     """
-    def checkForShortAnswers(self, checker):
-        if len(checker) == 0: 
-            print("False")
-            return False
-        elif len(checker) == 1:
-            print("True")
-            return True
+    def checkForShortAnswers(self):
+        return True
 
 test = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\omniApp\chromedriver.exe")
 
@@ -149,7 +140,7 @@ userData = {
             "What has been your favorite project or proudest accomplishment Why" : "TEST TEST TEST",
             "Gender" : "Female",
             "Race" : "Asian (Not Hispanic or Latino)",
-            "Veteran status" : "I am not a veteran",
+            "Veteran status" : "I am not a protected veteran",
             "I certify the information and answers provided by me within this application are true and correct." : "I Accept / I Agree",
             "Disability status" : "No, I don't have a disability"
 }
