@@ -63,6 +63,7 @@ class LeverAgent(Agent):
             elif len(inputAnswer) > 1:  
                 inputType = inputAnswer[0].get_attribute("type")
                 if inputType == "radio":
+                    print("@@@@@@@@@@@@@@@@@@")
                     self.radioInput(inputAnswer, userData[key])
                 elif inputType == "checkbox": 
                     continue 
@@ -79,8 +80,8 @@ class LeverAgent(Agent):
                 print("You have more things to do")     
 
     def radioInput(self, inputAnswer, userAnswer):
-        choices = [choice.get_attribute("value") for choice in inputAnswer]           
-        index = choice.index(userAnswer)
+        choices = [choice.get_attribute("value") for choice in inputAnswer]
+        index = choices.index(userAnswer)
         self.driver.execute_script("arguments[0].click();", inputAnswer[index])
 
 #    def checkboxInput(self): 
