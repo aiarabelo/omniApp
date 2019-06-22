@@ -56,43 +56,35 @@ class LeverAgent(Agent):
 
             if key not in userData.keys():
                 continue
+
+            elif len(inputAnswer) == 1:  
+                inputAnswer[0].send_keys(userData[key])
+            
             elif len(inputAnswer) > 1:  
                 inputType = inputAnswer[0].get_attribute("type")
                 if inputType == "radio":
                     self.radioInput(inputAnswer, userData[key])
                 elif inputType == "checkbox": 
                     continue 
-                inputAnswer[0].send_keys(userData[key])
-            elif len(inputAnswer) == 1:  
-                inputAnswer[0].send_keys(userData[key])
             
             elif len(textareaAnswer) == 1:  
                 textareaAnswer[0].send_keys(userData[key])
+
             elif len(selectAnswer) != 0: 
                 select_element = Select(selectAnswer[0])
                 select_element.select_by_visible_text(userData[key])
+
             else: 
                 continue
                 print("You have more things to do")     
 
     def radioInput(self, inputAnswer, userAnswer):
-        choiceList = []
-        for element in inputAnswer:
-            choice = element.get_attribute("value")
-            choiceList.append(choice)
-            if userAnswer == choice:
-                index = choiceList.index(choice)
-                print(inputAnswer[index])
-                print(choice)
-                print(inputAnswer)
-                print(userAnswer)
-                print(index)
-                print(choiceList)
-                self.driver.execute_script("arguments[0].click();", inputAnswer[index])
+        choices = [choice.get_attribute("value") for choice in inputAnswer]           
+        index = choice.index(userAnswer)
+        self.driver.execute_script("arguments[0].click();", inputAnswer[index])
 
-    def checkboxInput(self): 
-        pass
-
+#    def checkboxInput(self): 
+#        pass
 test = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\omniApp\chromedriver.exe")
 date = "06/21/2019"
 userData = {
