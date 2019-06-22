@@ -29,6 +29,15 @@ class LeverAgent(Agent):
     def get(self, url):
         self.driver.get(url)
 
+    """
+    FUNCTION: Fills out the application page
+    questionPair: a dictionary containing questions as they key, 
+                  and the corresponding WebElements as values
+    userData: a dictionary containing the questions as the key, 
+              and the answers as values
+    Returns questionPair, a dictionary containing questions and its corresponding webelement
+    """
+
     def getQuestionDict(self):
         #self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage.html")
         self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage2.html")
@@ -38,8 +47,15 @@ class LeverAgent(Agent):
             questionLabel = question.find_element_by_class_name("application-label")
             questionPair[questionLabel.text.split("\n")[0]] = question
         return questionPair
-
-
+    
+    """
+    FUNCTION: Fills out the application page
+    questionPair: a dictionary containing questions as they key, 
+                  and the corresponding WebElements as values
+    userData: a dictionary containing the questions as the key, 
+              and the answers as values
+    
+    """
     def autoInputQuestion(self, questionPair, userData):
         userDataSet = set(userData.keys())
         questionPairSet = set(questionPair.keys())
@@ -73,11 +89,23 @@ class LeverAgent(Agent):
                 continue
                 print("You have more things to do")     
 
+    """
+    FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
+    inputAnswer: List of WebElements of choices of type radio
+    userAnswer: A string, the answer of the user to the question 
+    
+    """
     def radioInput(self, inputAnswer, userAnswer):
         choices = [choice.get_attribute("value") for choice in inputAnswer]
         index = choices.index(userAnswer)
         self.driver.execute_script("arguments[0].click();", inputAnswer[index])
-
+    
+    """
+    FUNCTION: Fills out a checkbox input; used in the function "autoInputQuestion"
+    inputAnswer: List of WebElements of choices that are checkboxes 
+    userAnswer: A string, the answer(s) of the user to the question 
+    
+    """
     def checkboxInput(self, inputAnswer, userAnswers): 
         for userAnswer in userAnswers:
             choices = [choice.get_attribute("value") for choice in inputAnswer]
@@ -85,7 +113,6 @@ class LeverAgent(Agent):
             self.driver.execute_script("arguments[0].click();", inputAnswer[index])
 
 test = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\omniApp\chromedriver.exe")
-date = "06/21/2019"
 
 userData = {
             "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/OmniApp/resume.pdf",
@@ -125,6 +152,3 @@ userData = {
 }
 
 test.autoInputQuestion(test.getQuestionDict(), userData)
-
-#driver.get("http://www.python.org")
-#class: application-label
