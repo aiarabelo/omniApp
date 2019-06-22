@@ -63,10 +63,9 @@ class LeverAgent(Agent):
             elif len(inputAnswer) > 1:  
                 inputType = inputAnswer[0].get_attribute("type")
                 if inputType == "radio":
-                    print("@@@@@@@@@@@@@@@@@@")
                     self.radioInput(inputAnswer, userData[key])
                 elif inputType == "checkbox": 
-                    continue 
+                    self.checkboxInput(inputAnswer, userData[key]) 
             
             elif len(textareaAnswer) == 1:  
                 textareaAnswer[0].send_keys(userData[key])
@@ -84,8 +83,11 @@ class LeverAgent(Agent):
         index = choices.index(userAnswer)
         self.driver.execute_script("arguments[0].click();", inputAnswer[index])
 
-#    def checkboxInput(self): 
-#        pass
+    def checkboxInput(self, inputAnswer, userAnswer): 
+        choices = [choice.get_attribute("value") for choice in inputAnswer]
+        index = choices.index(userAnswer)
+        self.driver.execute_script("arguments[0].click();", inputAnswer[index])
+
 test = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\omniApp\chromedriver.exe")
 date = "06/21/2019"
 userData = {
