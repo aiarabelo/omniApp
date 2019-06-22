@@ -48,11 +48,6 @@ class LeverAgent(Agent):
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
             selectAnswer = questionPair[key].find_elements_by_tag_name("select")
             textareaAnswer = questionPair[key].find_elements_by_tag_name("textarea")
-            
-            print(key)
-            print(len(inputAnswer)) 
-            print(len(selectAnswer)) 
-            print(len(textareaAnswer))
 
             if key not in userData.keys():
                 continue
@@ -83,13 +78,15 @@ class LeverAgent(Agent):
         index = choices.index(userAnswer)
         self.driver.execute_script("arguments[0].click();", inputAnswer[index])
 
-    def checkboxInput(self, inputAnswer, userAnswer): 
-        choices = [choice.get_attribute("value") for choice in inputAnswer]
-        index = choices.index(userAnswer)
-        self.driver.execute_script("arguments[0].click();", inputAnswer[index])
+    def checkboxInput(self, inputAnswer, userAnswers): 
+        for userAnswer in userAnswers:
+            choices = [choice.get_attribute("value") for choice in inputAnswer]
+            index = choices.index(userAnswer)
+            self.driver.execute_script("arguments[0].click();", inputAnswer[index])
 
 test = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\omniApp\chromedriver.exe")
 date = "06/21/2019"
+
 userData = {
             "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/OmniApp/resume.pdf",
             "Full name" : "Allison Arabelo",
@@ -112,7 +109,7 @@ userData = {
             "Will you now or in the future require sponsorship for employment visa status" : "Yes",
             "When are you seeking to begin a full-time position?" : "Immediately", 
             "Do you currently, or in the future will you, require sponsorship to legally work in the United States?" : "Yes",
-            "Were you referred to Rigetti?" : "Yes", 
+            "Were you referred to Rigetti?" : ["Yes"], 
             "If so, by whom?" : "Daniel Setiawan",
             "Language Skill s Check all that apply" : ["English (ENG)"],
             "Where are you applying from" : "United States [USA]",
@@ -124,13 +121,10 @@ userData = {
             "Race" : "Asian (Not Hispanic or Latino)",
             "Veteran status" : "I am not a protected veteran",
             "I certify the information and answers provided by me within this application are true and correct." : "I Accept / I Agree",
-            "Disability status" : "No, I don't have a disability",
-            "Your name" : "Allison Arabelo",
-            "Today's date" : date,
+            "Disability status" : "No, I don't have a disability"
 }
 
 test.autoInputQuestion(test.getQuestionDict(), userData)
-
 
 #driver.get("http://www.python.org")
 #class: application-label
