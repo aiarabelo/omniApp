@@ -22,7 +22,6 @@ class Agent:
     Returns questionPair, a dictionary containing questions and its corresponding webelement
     """
     def getQuestionDict(self):
-        #self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage.html")
         self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage3.html")
         questions = self.driver.find_elements_by_class_name("application-question")
         questionPair = {}
@@ -31,7 +30,6 @@ class Agent:
             questionPair[questionLabel.text.split("\n")[0]] = question
         return questionPair
         
-
 class LeverAgent(Agent):
     def __init__(self, headless, chrome_executable_path):
         self.headless = headless
@@ -49,8 +47,6 @@ class LeverAgent(Agent):
               and the answers as values
     
     """
-     
-
     def autoInputQuestion(self, questionPair, userData):
         userDataSet = set(userData.keys())
         questionPairSet = set(questionPair.keys())
@@ -75,6 +71,8 @@ class LeverAgent(Agent):
                 return False
             elif len(textareaAnswer) == 1:
                 self.checkForShortAnswers()
+
+    #TODO: Alert if there are referral questions, or make a system for it 
 
     """
     FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
