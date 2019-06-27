@@ -18,11 +18,11 @@ class Agent:
     questionPair: a dictionary containing questions as they key, 
                   and the corresponding WebElements as values
     userData: a dictionary containing the questions as the key, 
-              and the answers as values
+              and the answers as valuesH
     Returns questionPair, a dictionary containing questions and its corresponding webelement
     """
     def getQuestionDict(self):
-        self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage3.html")
+        self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage2.n nml")
         questions = self.driver.find_elements_by_class_name("application-question")
         questionPair = {}
         for question in questions:
