@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for
+from wtforms import Form, BooleanField, StringField, PasswordField, validators
 from forms import RegistrationForm, LoginForm
 app = Flask(__name__)
 
@@ -29,14 +30,14 @@ def hello():
 def about():
     return render_template('about.html')
 
-@app.route("/register")
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
     return render_template('register.html', title = 'Register', form = form)
 
 @app.route("/login")
 def login():
-    form = RegistrationForm()
+    form = LoginForm()
     return render_template('login.html', title = 'Login', form = form)
 
 if __name__ == '__main__':
