@@ -9,6 +9,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 20px;
 }
 
+.alert {
+  margin-top: 20px;
+}
+
 .bg-steel {
   background-color: #5f788a;
 }
@@ -87,3 +91,4 @@ a.article-title:hover {
     border-radius: 0px;
     padding: 0px 40px 10px 40px;
 }
+

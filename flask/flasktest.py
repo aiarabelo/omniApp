@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, flash, redirect
 from wtforms import Form, BooleanField, StringField, PasswordField, validators
 from forms import RegistrationForm, LoginForm
 app = Flask(__name__)
@@ -23,7 +23,7 @@ posts = [
 
 @app.route("/")
 @app.route("/home")
-def hello():
+def home():
     return render_template('home.html', posts = posts)
 
 @app.route("/about")
@@ -33,11 +33,20 @@ def about():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for { form.username.data }!', 'success') #success is a bootstrap class
+        return redirect(url_for('home'))
     return render_template('register.html', title = 'Register', form = form)
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'alliebaby@zach.com' and form.password.data == "asdlkj":
+            flash('You have logged in.', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title = 'Login', form = form)
 
 if __name__ == '__main__':
