@@ -9,8 +9,10 @@ from sqlalchemy import Table, Column, String, MetaData
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'a2f8836ec3c14d304d0422e18a0e4366' 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:l1pt0n@localhost:5432/omniApp'
 db = SQLAlchemy(app)
+
+engine = create_engine('postgresql://postgres:l1pt0n@localhost:5432/omniApp')
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
