@@ -46,6 +46,11 @@
             </ul>
             <!-- Navbar Right side -->
             <ul class="navbar-nav ml-auto">
+            {% if current_user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
+            </li>
+            {%else%}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('login')}}">Login</a>
             </li>
@@ -56,6 +61,7 @@
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
             </form>
+            {% endif %}
             </ul>
         </div>
     </nav>

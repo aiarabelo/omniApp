@@ -9,6 +9,11 @@ engine = create_engine('postgresql://postgres:l1pt0n@localhost:5432/omniApp')
 
 @login_manager.user_loader
 def load_user(user_id):
+    """
+    FUNCTION: Reloads the user from the user ID in the session
+    user_id: 
+    Returns the username with that ID
+    """
     return User.query.get(int(user_id))
 
 class User(db.Model, UserMixin):
@@ -25,7 +30,7 @@ class User(db.Model, UserMixin):
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default =datetime.utcnow)
+    date_posted = db.Column(db.DateTime, nullable=False, default = datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable = False) #user.id is lowercase because it refers to the column id
 
