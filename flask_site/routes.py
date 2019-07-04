@@ -2,6 +2,7 @@ from flask import render_template, url_for, flash, redirect
 from flask_site import app, db, bcrypt
 from flask_site.forms import RegistrationForm, LoginForm
 from flask_site.models import User, Post
+from flask_login import login_user
 
 posts = [
     {
@@ -12,7 +13,7 @@ posts = [
     },
     
     {
-        'author' : 'Zachary Chao',
+        'author' : 'Audrey Chao',
         'title' : 'Job post',
         'content' : 'opening',
         'date_posted' : 'May 20, 1996'
@@ -41,12 +42,24 @@ def register():
     return render_template('register.html', title = 'Register', form = form)
 
 @app.route("/login", methods=['GET', 'POST'])
+
 def login():
+    """
+    FUNCTION: Logs in
+    user.password: password that is in the database
+    form.password.data: password that the user entered in the form when trying to login
+    form.email.data: email that the user entered in the form during login
+    form.remember.data: True or False (checked or unchecked), for when a user wants details to be remembered
+    Returns The login page, with a title of "Login"
+    """
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'alliebaby@zach.com' and form.password.data == "asdlkj":
-            flash('You have logged in.', 'success')
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
             return redirect(url_for('home'))
         else:
-            flash('Login Unsuccessful. Please check username and password.', 'danger')
+            flash('Login Unsuccessful. Please check email and password.', 'danger')
     return render_template('login.html', title = 'Login', form = form)
+
+
