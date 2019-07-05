@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from flask_site import app, db, bcrypt
 from flask_site.forms import RegistrationForm, LoginForm
 from flask_site.models import User, Post
@@ -58,6 +58,7 @@ def login():
     form.password.data: password that the user entered in the form when trying to login
     form.email.data: email that the user entered in the form during login
     form.remember.data: True or False (checked or unchecked), for when a user wants details to be remembered
+    next_page: loads the next page when you login from a page that prompts you to login
     Returns The login page, with a title of "Login". Flashes "unsuccessful login" if wrong credentials.
     """
     print(current_user)
@@ -68,7 +69,8 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            return redirect(url_for('home'))
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check email and password.', 'danger')
     return render_template('login.html', title = 'Login', form = form)
@@ -79,5 +81,6 @@ def logout():
     return redirect(url_for('home'))
 
 @app.route("/account")
+@login_required
 def account():
     return render_template('account.html', title = 'Account')
