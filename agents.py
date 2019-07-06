@@ -22,7 +22,7 @@ class Agent:
     Returns questionPair, a dictionary containing questions and its corresponding webelement
     """
     def getQuestionDict(self):
-        self.get("file:///C:/Users/aiarabelo/Desktop/Projects/omniApp/testpage2.n nml")
+        self.get("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html")
         questions = self.driver.find_elements_by_class_name("application-question")
         questionPair = {}
         for question in questions:
@@ -103,10 +103,10 @@ class LeverAgent(Agent):
     def checkForShortAnswers(self):
         return True
 
-test = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\omniApp\chromedriver.exe")
+test = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\Github\omniApp\chromedriver.exe")
 
 userData = {
-            "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/OmniApp/resume.pdf",
+            "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/Github/OmniApp/resume.pdf",
             "Full name" : "Allison Arabelo",
             "Email" : "arabelo.aa@gmail.com",
             "Phone" : "628-241-9814",

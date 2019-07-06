@@ -87,12 +87,10 @@ def account():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.email = form.email.data
-        print(current_user)
         db.session.commit()
         flash("Your account has been updated.", 'success')
         return redirect(url_for('account'))
     elif request.method == "GET":
-        print('hi')
         form.username.data = current_user.username 
         form.email.data = current_user.email 
     image_file = url_for('static', filename='profile_pics/'+ current_user.image_file)
