@@ -7,11 +7,11 @@ class webScraper:
     def companyURL(self, atsURL):
         i = 1
         with open(atsURL + ".txt", "a+") as companies:
-            for url in search('site:' + atsURL, stop = 20000):
+            for url in search('site:' + atsURL, stop = 25000):
                 companies.write(url+"\n")
                 i+=1
                 if i % 10 == 0:
                     time.sleep(40)
                 print(url)
 
-print(webScraper().companyURL(atsURLS[0]))
+webScraper().companyURL(atsURLS[0])
