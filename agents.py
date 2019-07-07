@@ -6,7 +6,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 import pdb
 
-applyURL = "file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"
 
 class Agent:
     def __init__(self):
@@ -50,9 +49,6 @@ class LeverAgent(Agent):
                 and the answers as values
         
         """
-
-        userDataSet = set(userData.keys())
-        questionPairSet = set(questionPair.keys())
         for key in questionPair.keys():
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
             selectAnswer = questionPair[key].find_elements_by_tag_name("select")
@@ -105,45 +101,3 @@ class LeverAgent(Agent):
     """
     def checkForShortAnswers(self):
         return True
-
-test = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\Github\omniApp\chromedriver.exe")
-
-userData = {
-            "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/Github/OmniApp/resume.pdf",
-            "Full name" : "Allison Arabelo",
-            "Email" : "arabelo.aa@gmail.com",
-            "Phone" : "628-241-9814",
-            "Current company" : "Enishi.ai",
-            "Twitter URL" : "",
-            "LinkedIn URL" : "https://www.linkedin.com/in/allisonarabelo/",
-            "GitHub URL" : "https://www.github.com/aiarabelo", 
-            "Portfolio URL" : "http://www.allisonarabelo.com/",
-            "Other website" : "",
-            "At the time of applying, are you 18 years of age or older?" : "Yes",
-            #TODO make this generalized for other countries "... to work in [country]"
-            #TODO make the sponsorship questions more generalized
-            "Are you legally authorized to work in the United States?" : "No",
-            "Are you legally authorized to work in the country for which you are applying" : "No",
-            "Are you currently authorized to work in the U.S.?" : "No",
-            "Will you now or in the future require Rigetti Quantum Computing to commence (\"sponsor\") an immigration case in order to employ you?" : "Yes",
-            "Will you now or in the future require sponsorship for employment visa status e g H 1B etc" : "Yes",
-            "Will you now or in the future require sponsorship for employment visa status" : "Yes",
-            "When are you seeking to begin a full-time position?" : "Immediately", 
-            "Do you currently, or in the future will you, require sponsorship to legally work in the United States?" : "Yes",
-            #TODO generalize; make sure additional information is actually cover letter 
-            "Were you referred to Rigetti?" : ["Yes"], 
-            "If so, by whom?" : "Daniel Setiawan",
-            "Language Skill s Check all that apply" : ["English (ENG)"],
-            "Where are you applying from" : "United States [USA]",
-            "How did you hear about this job?" : "LinkedIn",
-            #"Which university are you currently attending or did you last attend Please select Other School Not Listed if your school is not listed" : "University of California - Berkeley",
-            "Please tell us how you heard about this opportunity" : "Other",
-            "What has been your favorite project or proudest accomplishment Why" : "TEST TEST TEST",
-            "Gender" : "Female",
-            "Race" : "Asian (Not Hispanic or Latino)",
-            "Veteran status" : "I am not a protected veteran",
-            "I certify the information and answers provided by me within this application are true and correct." : "I Accept / I Agree",
-            "Disability status" : "No, I don't have a disability"
-}
-
-test.autoInputQuestion(test.getQuestionDict(applyURL), userData)
