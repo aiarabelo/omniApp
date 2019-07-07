@@ -55,7 +55,8 @@ class User(Base):
 print(User.__table__)
 
 
-
+# TODO: Don't hardcode this, put it in env.json or make a fake wrapper
+# for a database and just make it return this for now
 userData = {
       "Resume/CV" : "./resume.pdf",
       "Full name" : "Zachary Chao",

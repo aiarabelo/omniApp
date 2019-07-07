@@ -8,21 +8,23 @@ import pdb
 
 
 class Agent:
-    def __init__(self):
+    def __init__(self, headless, chrome_executable_path):
+        self.headless = headless
+        self.chrome_executable_path = chrome_executable_path
         options = Options()
         options.set_headless(headless=self.headless)
         self.driver = webdriver.Chrome(options=options, 
             executable_path=self.chrome_executable_path)
 
+    """
+    FUNCTION: Scrapes the given webpage for questions 
+    questionPair: a dictionary containing questions as they key, 
+                and the corresponding WebElements as values
+    userData: a dictionary containing the questions as the key, 
+            and the answers as values
+    Returns questionPair, a dictionary containing questions and its corresponding webelement
+    """
     def getQuestionDict(self, applyURL):
-        """
-        FUNCTION: Scrapes the given webpage for questions 
-        questionPair: a dictionary containing questions as they key, 
-                    and the corresponding WebElements as values
-        userData: a dictionary containing the questions as the key, 
-                and the answers as values
-        Returns questionPair, a dictionary containing questions and its corresponding webelement
-        """
         self.get(applyURL)
         questions = self.driver.find_elements_by_class_name("application-question")
         questionPair = {}
@@ -30,25 +32,28 @@ class Agent:
             questionLabel = question.find_element_by_class_name("application-label")
             questionPair[questionLabel.text.split("\n")[0]] = question
         return questionPair
-        
-class LeverAgent(Agent):
-    def __init__(self, headless, chrome_executable_path):
-        self.headless = headless
-        self.chrome_executable_path = chrome_executable_path
-        super().__init__()
 
     def get(self, url):
         self.driver.get(url)
-    
-    def autoInputQuestion(self, questionPair, userData):
-        """
-        FUNCTION: Fills out the application page
-        questionPair: a dictionary containing questions as they key, 
-                    and the corresponding WebElements as values
-        userData: a dictionary containing the questions as the key, 
-                and the answers as values
         
-        """
+
+class LeverAgent(Agent):
+    def __init__(self, headless, chrome_executable_path):
+        super().__init__(headless, chrome_executable_path)
+    
+    '''
+    TODO: If checkForShortAnswers is True, abort this job post
+    as we do not currently support that feature.
+    '''
+    """
+    FUNCTION: Fills out the application page
+    questionPair: a dictionary containing questions as they key, 
+                and the corresponding WebElements as values
+    userData: a dictionary containing the questions as the key, 
+            and the answers as values
+    
+    """
+    def autoInputQuestion(self, questionPair, userData):
         for key in questionPair.keys():
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
             selectAnswer = questionPair[key].find_elements_by_tag_name("select")
@@ -72,7 +77,6 @@ class LeverAgent(Agent):
                 self.checkForShortAnswers()
 
     #TODO: Alert if there are referral questions, or make a system for it 
-
     """
     FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
     inputAnswer: List of WebElements of choices of type radio
@@ -96,6 +100,7 @@ class LeverAgent(Agent):
             index = choices.index(userAnswer)
             self.driver.execute_script("arguments[0].click();", inputAnswer[index])
    
+    # TODO: Actually implement this. This does not check it simply returns True.
     """
     FUNCTION: Returns "True" if there are short answers 
     """

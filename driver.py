@@ -3,6 +3,8 @@ from googleScrape import WebScraper
 from agents import Agent, LeverAgent
 
 if __name__ == "__main__":
+    # TODO: Place this in a credentials.txt file and use json.loads to 
+    # make it into a dictionary until you use a database
     userData = {
       "Resume/CV" : "./resume.pdf",
       "Full name" : "Zachary Chao",
@@ -36,6 +38,8 @@ if __name__ == "__main__":
       "Disability status" : "No, I don't have a disability"
     }
 
+    # TODO: This code is not DRY (don't repeat yourself), use a list of ats' and loop through
+
     # Scrapes Google for companies on Lever if the .txt file of scraped URLs doesn't exist yet
     if not os.path.exists("./jobs.lever.co.txt"):
         WebScraper().companyInfo("jobs.lever.co")
@@ -51,6 +55,10 @@ if __name__ == "__main__":
     with open("boards.greenhouse.io.txt", "r") as g:
         greenhouseCompanyNames = g.read().split("\n")
     
+    '''
+    TODO: Do not do this : [[item.commitment, item.title, item.applyUrl] for item in jobPostList]
+    Simply use the classes, it is much more readable, faster and easier to use.
+    '''
     # Lists details of the job posting: commitment, title, and applyUrl
     companyDetails = {}
     for companyName in leverCompanyNames:
@@ -61,6 +69,11 @@ if __name__ == "__main__":
     jobPostList = list(filter(lambda x : "Intern" in x[0] and "Software Engineer" in x[1], companyDetails[companyName]))
 
     # Fill out the job applications' easy questions
+    '''
+    TODO: Don't put chromedriver.exe into git, make the induvidual place it into 
+    some folder or something and use the credentials.txt for the path OR have a hard
+    set relative path like ./data/chromedriver.exe 
+    '''
     leverCrawler = LeverAgent(False, r".\chromedriver.exe")
     for item in jobPostList:
         leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item[2]), userData)
