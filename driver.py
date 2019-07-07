@@ -1,5 +1,6 @@
 import os
 from googleScrape import WebScraper
+from agents import Agent, LeverAgent
 
 if __name__ == "__main__":
     # Scrapes Google for companies on Lever if the .txt file of scraped URLs doesn't exist yet
@@ -17,12 +18,16 @@ if __name__ == "__main__":
     with open("boards.greenhouse.io.txt", "r") as g:
         greenhouseCompanyNames = g.read().split("\n")
     
-    # Returns a dictionary of the job posting's commitment, title, and applyUrl
+    # Lists details of the job posting: commitment, title, and applyUrl
     companyDetails = {}
     for companyName in companyNames:
         jobPostList = WebScraper().getJobPosts(companyName) # This is for Lever only
         companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl] for item in jobPostList]
-        jobPostList = list(filter(lambda x : "Intern" in x[0] and "Software Engineer" in x[1], companyDetails[companyName]))
-        filter(lambda x: if  , companyDetails[companyName])
+    
+    # Filters out what we want for the job commitment and title
+    jobPostList = list(filter(lambda x : "Intern" in x[0] and "Software Engineer" in x[1], companyDetails[companyName]))
 
-    print([str(item) for item in WebScraper().getJobPosts(companyName)])
+    # Fill out the job applications' easy questions
+    leverCrawler = LeverAgent(False, r"C:\Users\aiarabelo\Desktop\Projects\Github\omniApp\chromedriver.exe")
+    for item in jobPostList:
+        leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item[2]), userData)

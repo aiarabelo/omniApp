@@ -6,6 +6,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 import pdb
 
+applyURL = "file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"
+
 class Agent:
     def __init__(self):
         options = Options()
@@ -13,16 +15,16 @@ class Agent:
         self.driver = webdriver.Chrome(options=options, 
             executable_path=self.chrome_executable_path)
 
-    """
-    FUNCTION: Scrapes the given webpage for questions 
-    questionPair: a dictionary containing questions as they key, 
-                  and the corresponding WebElements as values
-    userData: a dictionary containing the questions as the key, 
-              and the answers as values
-    Returns questionPair, a dictionary containing questions and its corresponding webelement
-    """
-    def getQuestionDict(self):
-        self.get("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html")
+    def getQuestionDict(self, applyURL):
+        """
+        FUNCTION: Scrapes the given webpage for questions 
+        questionPair: a dictionary containing questions as they key, 
+                    and the corresponding WebElements as values
+        userData: a dictionary containing the questions as the key, 
+                and the answers as values
+        Returns questionPair, a dictionary containing questions and its corresponding webelement
+        """
+        self.get(applyURL)
         questions = self.driver.find_elements_by_class_name("application-question")
         questionPair = {}
         for question in questions:
@@ -39,7 +41,6 @@ class LeverAgent(Agent):
     def get(self, url):
         self.driver.get(url)
     
-
     def autoInputQuestion(self, questionPair, userData):
         """
         FUNCTION: Fills out the application page
@@ -145,4 +146,4 @@ userData = {
             "Disability status" : "No, I don't have a disability"
 }
 
-test.autoInputQuestion(test.getQuestionDict(), userData)
+test.autoInputQuestion(test.getQuestionDict(applyURL), userData)
