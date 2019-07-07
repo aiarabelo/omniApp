@@ -47,16 +47,10 @@ class WebScraper:
         r = requests.get("https://api.lever.co/v0/postings/" + companyName)
         j = json.loads(r.text)
         return [JobPost(d) for d in j]
-        
-    def getCompanyInfo(self, companyURL):
-        ##req = requests.get(companyURL)
-        pass
 
     def getJobList(self, company):
         print("Crawling: ")
 
-### Uncomment the next two lines to scrape for companies:         
-#greenhouseCompanyInfoDict = WebScraper().companyInfo(atsURLs[0])      
-#leverCompanyInfoDict = WebScraper().companyInfo(atsURLs[1])
 
-### Using the previously scraped companies as test data 
+if __name__ == "__main__":
+    print(WebScraper().getJobPosts("bird"))
