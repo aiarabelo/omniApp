@@ -14,11 +14,11 @@ class Agent:
             executable_path=self.chrome_executable_path)
 
     """
-    FUNCTION: Fills out the application page
+    FUNCTION: Scrapes the given webpage for questions 
     questionPair: a dictionary containing questions as they key, 
                   and the corresponding WebElements as values
     userData: a dictionary containing the questions as the key, 
-              and the answers as valuesH
+              and the answers as values
     Returns questionPair, a dictionary containing questions and its corresponding webelement
     """
     def getQuestionDict(self):
@@ -39,15 +39,17 @@ class LeverAgent(Agent):
     def get(self, url):
         self.driver.get(url)
     
-    """
-    FUNCTION: Fills out the application page
-    questionPair: a dictionary containing questions as they key, 
-                  and the corresponding WebElements as values
-    userData: a dictionary containing the questions as the key, 
-              and the answers as values
-    
-    """
+
     def autoInputQuestion(self, questionPair, userData):
+        """
+        FUNCTION: Fills out the application page
+        questionPair: a dictionary containing questions as they key, 
+                    and the corresponding WebElements as values
+        userData: a dictionary containing the questions as the key, 
+                and the answers as values
+        
+        """
+
         userDataSet = set(userData.keys())
         questionPairSet = set(questionPair.keys())
         for key in questionPair.keys():
