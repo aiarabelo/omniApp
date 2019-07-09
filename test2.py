@@ -1,9 +1,13 @@
-x = {"one": "1", "two" : "2"}
-y = {"one": "1", "two" : "2", "three" : "3"}
+y = []
+x = set()
+for q in range(5):
+	print (q)
+	y.append(q)
+	x.add(q)
+	for i in range(7):
+		print (i)
+		y.append(i)
+		x.add(i)
 
-xSet = set(x)
-ySet = set(y)
-if xSet.issubset(ySet) == True:
-	print("Yes!")
-
-# TODO: Delete this
+print(y)
+print(x)
