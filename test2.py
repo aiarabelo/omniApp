@@ -9,5 +9,5 @@ for q in range(5):
 		y.append(i)
 		x.add(i)
 
-print(y)
+print("Length" + str(len(x)))
 print(x)

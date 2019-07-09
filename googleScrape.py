@@ -41,7 +41,7 @@ class WebScraper:
         companies = list(filteredURLs)
         with open(baseURL + ".txt", "w+") as f:
             for company in companies:
-                f.write(item + "\n")
+                f.write(company + "\n")
     ''' 
     TODO: This is currently hardcoded for lever only, fix that
     '''
