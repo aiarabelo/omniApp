@@ -16,9 +16,9 @@ class WebScraper:
         baseURL: the base URL of the ATS that will be scraped
         unfilteredURL: URL of company sites that will be scraped in Google
         r: filtered company URL; is of format <baseURL>/company
-        filteredURLs: a list of filtered URLs
-        nameAndURL: dictionary containing the company URLs, with truncated company names as keys
-        Purpose: Writes the resulting scraped websites onto a different file, of format baseURL.txt
+        filteredURLs: a set of filtered URLs
+        companies: a list of filtered URLs, no duplicates
+        Purpose: Writes the resulting scraped company names onto a different file, of format baseURL.txt
         """
         i = 1
         companyURLs = []
@@ -37,11 +37,11 @@ class WebScraper:
             if r is not None:
                 print("FILTERED! " + r.group(1))
                 filteredURLs.add(r.group(1))
-                x = list(filteredURLs)
-                print(x)
-                with open(baseURL + ".txt", "w+") as f:
-                    for item in x:
-                        f.write(item + "\n")
+
+        companies = list(filteredURLs)
+        with open(baseURL + ".txt", "w+") as f:
+            for company in companies:
+                f.write(item + "\n")
     ''' 
     TODO: This is currently hardcoded for lever only, fix that
     '''
@@ -54,4 +54,5 @@ class WebScraper:
 if __name__ == "__main__":
     #For testing getJobPosts
     #print(WebScraper().getJobPosts("bird"))
-    WebScraper().companyInfo(atsURLs[1])
+    for atsURL in atsURLs:
+        WebScraper().companyInfo(atsURL)
