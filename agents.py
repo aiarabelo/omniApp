@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
-import pdb
+import time
 
 applyURL = "./testpage2.html"
 
@@ -36,7 +36,6 @@ class Agent:
 
     def get(self, url):
         self.driver.get(url)
-        pdb.set_trace()
         
 
 class LeverAgent(Agent):
@@ -60,9 +59,10 @@ class LeverAgent(Agent):
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
             selectAnswer = questionPair[key].find_elements_by_tag_name("select")
             textareaAnswer = questionPair[key].find_elements_by_tag_name("textarea")
+            time.sleep(3)
             if key not in userData.keys():
                 pass
-            if len(inputAnswer) == 1:  
+            elif len(inputAnswer) == 1:  
                 inputAnswer[0].send_keys(userData[key])
             elif len(inputAnswer) > 1:  
                 inputType = inputAnswer[0].get_attribute("type")
@@ -77,6 +77,9 @@ class LeverAgent(Agent):
                 return False
             elif len(textareaAnswer) == 1:
                 self.checkForShortAnswers()
+            else:
+                self.submitForm()
+                
 
     #TODO: Alert if there are referral questions, or make a system for it 
     """
@@ -108,10 +111,21 @@ class LeverAgent(Agent):
     """
     def checkForShortAnswers(self):
         return True
+    
+    """
+    FUNCTION: Submits the form
+    inputAnswer: List of WebElements of choices that are checkboxes 
+    userAnswer: A string, the answer(s) of the user to the question 
+    
+    """
 
+    def submitForm(self):
+        self.driver.find_element_by_type("submit").click()
+name = "Zachary Chao"
 userData = {
-      "Resume/CV" : "./resume.pdf",
-      "Full name" : "Zachary Chao",
+      "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/resume.pdf",
+      "Full name" : name,
+      "Your name" : "Zachary Chao",
       "Email" : "zachchao@berkeley.edu",
       "Phone" : "760-889-1965",
       "Current company" : "CrossInstall",
@@ -139,10 +153,11 @@ userData = {
       "Race" : "Asian (Not Hispanic or Latino)",
       "Veteran status" : "I am not a protected veteran",
       "I certify the information and answers provided by me within this application are true and correct." : "I Accept / I Agree",
-      "Disability status" : "No, I don't have a disability"
+      "Disability status" : "No, I don't have a disability",
+      "Today's date" : "07/09/19"
 }
 
 
 if __name__ == "__main__":
     leverCrawler = LeverAgent(False, "./chromedriver.exe")
-    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("./testpage2.html"), userData)
+    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"), userData)
