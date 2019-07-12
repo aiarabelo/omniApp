@@ -86,7 +86,7 @@ class LeverAgent(Agent):
         print("There are " + str(continueIndicator) + " unanswered questions.")
         if continueIndicator == 0:
             self.submitForm()
-            #self.driver.close()             
+            self.driver.close()             
 
     #TODO: Alert if there are referral questions, or make a system for it 
     """
@@ -158,4 +158,4 @@ userData = {
 if __name__ == "__main__":
     
     leverCrawler = LeverAgent(False, "./chromedriver.exe")
-    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage3.html"), userData)
+    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"), userData)
