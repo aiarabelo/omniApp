@@ -17,13 +17,14 @@ class Agent:
 
     """
     FUNCTION: Scrapes the given webpage for questions 
-    questions and moreQuestions: element objects of the questions
+    questions: list of webelement objects for questions 
+    question and additionalQuestion: webelement object corresponding to a question
     questionPair: a dictionary containing questions as they key, 
                 and the corresponding WebElements as values
-    userData: a dictionary containing the questions as the key, 
-            and the answers as values
+    questionLabel and additionalQuestionLabel: A question in the application (string)
     Returns questionPair, a dictionary containing questions and its corresponding webelement
-        """
+    """
+   
     def getQuestionDict(self, applyURL):
         self.get(applyURL)
         questionPair = {}
@@ -35,14 +36,11 @@ class Agent:
                 questionPair[questionLabel.get_attribute("innerHTML")] = question
             else: 
                 questionPair[questionLabel.text.split("\n")[0]] = question
-            print("@@@@ Question Label @@@@ ")
-            print(questionLabel.text + "(" +str(len(questionLabel.text))+")")
-            print("@@@@ outerHTML of each label @@@@ " + questionLabel.get_attribute("innerHTML"))
 
         # For Lever's "Additional Question" for cover letters/supplementary information
         additionalQuestion = self.driver.find_element_by_class_name("application-additional")
-        additionalQuestionText = additionalQuestion.find_element_by_tag_name("textarea")
-        questionPair[additionalQuestionText.get_attribute("placeholder")] = additionalQuestion
+        additionalQuestionLabel = additionalQuestion.find_element_by_tag_name("textarea")
+        questionPair[additionalQuestionLabel.get_attribute("placeholder")] = additionalQuestion
 
         return questionPair
 
@@ -53,18 +51,12 @@ class LeverAgent(Agent):
     def __init__(self, headless, chrome_executable_path):
         super().__init__(headless, chrome_executable_path)
     
-    '''
-    TODO: If checkForShortAnswers is True, abort this job post
-    as we do not currently support that feature.
-    '''
     """
     FUNCTION: Fills out the application page
     questionPair: a dictionary containing questions as they key, 
                 and the corresponding WebElements as values
     userData: a dictionary containing the questions as the key, 
             and the answers as values
-
-    #TODO: Stop if question was unanswered, if there are short answers; break if cover letter space
 
     """
     def autoInputQuestion(self, questionPair, userData):
@@ -87,13 +79,11 @@ class LeverAgent(Agent):
             elif len(selectAnswer) != 0: 
                 select_element = Select(selectAnswer[0])
                 select_element.select_by_visible_text(userData[key])
-            # elif len(textareaAnswer) == 0: 
-            #     doNotSubmit = False
             elif len(textareaAnswer) == 1:
                 continueIndicator += 1
             else:
                 continueIndicator += 1
-        print("There are "+ str(continueIndicator) +" unanswered questions.")
+        print("There are " + str(continueIndicator) + " unanswered questions.")
         if continueIndicator == 0:
             self.submitForm()
             #self.driver.close()             
@@ -121,23 +111,14 @@ class LeverAgent(Agent):
             choices = [choice.get_attribute("value") for choice in inputAnswer]
             index = choices.index(userAnswer)
             self.driver.execute_script("arguments[0].click();", inputAnswer[index])
-   
-    # TODO: Actually implement this. This does not check it simply returns True.
-    """
-    FUNCTION: Returns "True" if there are short answers 
-    """
-    def checkForShortAnswers(self):
-        return True
     
     """
     FUNCTION: Submits the form
-    inputAnswer: List of WebElements of choices that are checkboxes 
-    userAnswer: A string, the answer(s) of the user to the question 
     
     """
-
     def submitForm(self):
         self.driver.find_element_by_tag_name("button").submit()
+
 name = "Zachary Chao"
 userData = {
       "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/resume.pdf",
