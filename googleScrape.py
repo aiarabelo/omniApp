@@ -50,9 +50,6 @@ class WebScraper:
         j = json.loads(r.text)
         return [JobPost(d) for d in j]
 
-# Test case -- Delete after
 if __name__ == "__main__":
-    #For testing getJobPosts
-    #print(WebScraper().getJobPosts("bird"))
     for atsURL in atsURLs:
         WebScraper().companyInfo(atsURL)

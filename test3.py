@@ -1,7 +1,7 @@
-list1 = [2,2,2,3,4,1]
-list2 = [1, 2,3 ,3 , 4, 7]
-print(list1)
-print(list2)
-list1.extend(list2)
-print(list1)
-print(list2)
+with open("jobs.lever.co.txt", "r") as f:
+    print("Extracting company names from Lever...")
+    leverCompanyNames = f.read().split("\n")
+    print("Extraction done!")
+
+leverCompanyNames = leverCompanyNames[:-1]
+print(leverCompanyNames)

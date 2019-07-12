@@ -84,11 +84,12 @@ class LeverAgent(Agent):
             else:
                 continueIndicator += 1
         print("There are " + str(continueIndicator) + " unanswered questions.")
-        if continueIndicator == 0:
-            self.submitForm()
-            self.driver.close()             
+        # if continueIndicator == 0:
+        #     self.submitForm()
+        #     self.driver.close()             
 
     #TODO: Alert if there are referral questions, or make a system for it 
+    
     """
     FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
     inputAnswer: List of WebElements of choices of type radio
@@ -104,7 +105,6 @@ class LeverAgent(Agent):
     FUNCTION: Fills out a checkbox input; used in the function "autoInputQuestion"
     inputAnswer: List of WebElements of choices that are checkboxes 
     userAnswer: A string, the answer(s) of the user to the question 
-    
     """
     def checkboxInput(self, inputAnswer, userAnswers): 
         for userAnswer in userAnswers:
@@ -114,7 +114,6 @@ class LeverAgent(Agent):
     
     """
     FUNCTION: Submits the form
-    
     """
     def submitForm(self):
         self.driver.find_element_by_tag_name("button").submit()
@@ -156,6 +155,5 @@ userData = {
 }
 
 if __name__ == "__main__":
-    
     leverCrawler = LeverAgent(False, "./chromedriver.exe")
     leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"), userData)
