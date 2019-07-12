@@ -6,8 +6,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 import time
 
-applyURL = "./testpage2.html"
-
 class Agent:
     def __init__(self, headless, chrome_executable_path):
         self.headless = headless
@@ -19,19 +17,25 @@ class Agent:
 
     """
     FUNCTION: Scrapes the given webpage for questions 
+    questions and moreQuestions: element objects of the questions
     questionPair: a dictionary containing questions as they key, 
                 and the corresponding WebElements as values
     userData: a dictionary containing the questions as the key, 
             and the answers as values
     Returns questionPair, a dictionary containing questions and its corresponding webelement
-    """
+        """
     def getQuestionDict(self, applyURL):
         self.get(applyURL)
         questions = self.driver.find_elements_by_class_name("application-question")
+        moreQuestions = self.driver.find_elements_by_id("application-question")
+        questions.extend(moreQuestions)
         questionPair = {}
         for question in questions:
-            questionLabel = question.find_element_by_class_name("application-label")
-            questionPair[questionLabel.text.split("\n")[0]] = question
+            questionLabel = question.find_element_by_class_name("application-label") 
+            if len(questionLabel.text) == 0: 
+                questionPair[questionLabel.get_attribute("innerHTML")] = question
+            else: 
+                questionPair[questionLabel.text.split("\n")[0]] = question
         return questionPair
 
     def get(self, url):
@@ -59,7 +63,6 @@ class LeverAgent(Agent):
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
             selectAnswer = questionPair[key].find_elements_by_tag_name("select")
             textareaAnswer = questionPair[key].find_elements_by_tag_name("textarea")
-            time.sleep(3)
             if key not in userData.keys():
                 pass
             elif len(inputAnswer) == 1:  
@@ -78,7 +81,8 @@ class LeverAgent(Agent):
             elif len(textareaAnswer) == 1:
                 self.checkForShortAnswers()
             else:
-                self.submitForm()
+                continue
+        self.submitForm()
                 
 
     #TODO: Alert if there are referral questions, or make a system for it 
@@ -120,11 +124,11 @@ class LeverAgent(Agent):
     """
 
     def submitForm(self):
-        self.driver.find_element_by_type("submit").click()
+        self.driver.find_element_by_tag_name("postings-btn template-btn-submit teal").click()
 name = "Zachary Chao"
 userData = {
       "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/resume.pdf",
-      "Full name" : name,
+      "Full name" : "Zachary Chao",
       "Your name" : "Zachary Chao",
       "Email" : "zachchao@berkeley.edu",
       "Phone" : "760-889-1965",
@@ -154,10 +158,11 @@ userData = {
       "Veteran status" : "I am not a protected veteran",
       "I certify the information and answers provided by me within this application are true and correct." : "I Accept / I Agree",
       "Disability status" : "No, I don't have a disability",
-      "Today's date" : "07/09/19"
+      "Today’s date" : "07/09/19"
 }
 
 
 if __name__ == "__main__":
+    
     leverCrawler = LeverAgent(False, "./chromedriver.exe")
     leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"), userData)

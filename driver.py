@@ -16,7 +16,7 @@ if __name__ == "__main__":
         leverCompanyNames = f.read().split("\n")
 
     with open("boards.greenhouse.io.txt", "r") as g:
-        greenhouseCompanyNames = g.read().splito("\n")
+        greenhouseCompanyNames = g.read().split("\n")
     
     # Lists details of the job posting: commitment, title, and applyUrl
     companyDetails = {}
