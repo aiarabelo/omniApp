@@ -40,7 +40,6 @@ class Agent:
 
     def get(self, url):
         self.driver.get(url)
-        
 
 class LeverAgent(Agent):
     def __init__(self, headless, chrome_executable_path):
@@ -56,15 +55,19 @@ class LeverAgent(Agent):
                 and the corresponding WebElements as values
     userData: a dictionary containing the questions as the key, 
             and the answers as values
-    
+
+    #TODO: Stop if question was unanswered, if there are short answers; break if cover letter space
+
     """
     def autoInputQuestion(self, questionPair, userData):
+        print("Filling out...")
+        continueIndicator = 0
         for key in questionPair.keys():
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
             selectAnswer = questionPair[key].find_elements_by_tag_name("select")
             textareaAnswer = questionPair[key].find_elements_by_tag_name("textarea")
             if key not in userData.keys():
-                pass
+                continueIndicator += 1
             elif len(inputAnswer) == 1:  
                 inputAnswer[0].send_keys(userData[key])
             elif len(inputAnswer) > 1:  
@@ -76,14 +79,16 @@ class LeverAgent(Agent):
             elif len(selectAnswer) != 0: 
                 select_element = Select(selectAnswer[0])
                 select_element.select_by_visible_text(userData[key])
-            elif len(textareaAnswer) == 0: 
-                return False
+            # elif len(textareaAnswer) == 0: 
+            #     doNotSubmit = False
             elif len(textareaAnswer) == 1:
-                self.checkForShortAnswers()
+                continueIndicator += 1
             else:
-                continue
-        self.submitForm()
-                
+                continueIndicator += 1
+        print(continueIndicator)
+        if continueIndicator = 0:
+            self.submitForm()
+            #self.driver.close()             
 
     #TODO: Alert if there are referral questions, or make a system for it 
     """
@@ -161,8 +166,7 @@ userData = {
       "Today’s date" : "07/09/19"
 }
 
-
 if __name__ == "__main__":
     
     leverCrawler = LeverAgent(False, "./chromedriver.exe")
-    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"), userData)
+    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage3.html"), userData)
