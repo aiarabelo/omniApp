@@ -26,16 +26,24 @@ class Agent:
         """
     def getQuestionDict(self, applyURL):
         self.get(applyURL)
-        questions = self.driver.find_elements_by_class_name("application-question")
-        moreQuestions = self.driver.find_elements_by_id("application-question")
-        questions.extend(moreQuestions)
         questionPair = {}
+        questions = self.driver.find_elements_by_class_name("application-question")
+
         for question in questions:
             questionLabel = question.find_element_by_class_name("application-label") 
             if len(questionLabel.text) == 0: 
                 questionPair[questionLabel.get_attribute("innerHTML")] = question
             else: 
                 questionPair[questionLabel.text.split("\n")[0]] = question
+            print("@@@@ Question Label @@@@ ")
+            print(questionLabel.text + "(" +str(len(questionLabel.text))+")")
+            print("@@@@ outerHTML of each label @@@@ " + questionLabel.get_attribute("innerHTML"))
+
+        # For Lever's "Additional Question" for cover letters/supplementary information
+        additionalQuestion = self.driver.find_element_by_class_name("application-additional")
+        additionalQuestionText = additionalQuestion.find_element_by_tag_name("textarea")
+        questionPair[additionalQuestionText.get_attribute("placeholder")] = additionalQuestion
+
         return questionPair
 
     def get(self, url):
@@ -85,8 +93,8 @@ class LeverAgent(Agent):
                 continueIndicator += 1
             else:
                 continueIndicator += 1
-        print(continueIndicator)
-        if continueIndicator = 0:
+        print("There are "+ str(continueIndicator) +" unanswered questions.")
+        if continueIndicator == 0:
             self.submitForm()
             #self.driver.close()             
 

@@ -17,34 +17,27 @@ class Agent:
 
     def getQuestionDict(self, applyURL):
         self.get(applyURL)
-        questions = self.driver.find_elements_by_class_name("application-question")
-        # disabilityQuestions = self.driver.find_elements_by_id("disabilitySignatureSection")
-        # for disabilityQuestion in disabilityQuestions:
-        #     additionalDisabilityQuestion = disabilityQuestion.find_elements_by_class_name("application-question")
-        #     print(additionalDisabilityQuestion)
-        #     questions.extend(additionalDisabilityQuestion)
-        #     for x in additionalDisabilityQuestion:
-        #         print("ADDITIONAL" + x.get_attribute("outerHTML"))
         questionPair = {}
+        questions = self.driver.find_elements_by_class_name("application-question")
+
         for question in questions:
             questionLabel = question.find_element_by_class_name("application-label") 
             if len(questionLabel.text) == 0: 
                 questionPair[questionLabel.get_attribute("innerHTML")] = question
             else: 
                 questionPair[questionLabel.text.split("\n")[0]] = question
-            # print("@@@@ Question Label @@@@ ")
-            # print(questionLabel.text + "(" +str(len(questionLabel.text))+")")
-            # print("@@@@ outerHTML of each label @@@@ " + questionLabel.get_attribute("innerHTML"))
-            
-        print(questions)
-        print("111111111111")
-        # print(disabilityQuestions)
+            print("@@@@ Question Label @@@@ ")
+            print(questionLabel.text + "(" +str(len(questionLabel.text))+")")
+            print("@@@@ outerHTML of each label @@@@ " + questionLabel.get_attribute("innerHTML"))
+
+        # For Lever's "Additional Question" for cover letters/supplementary information. 
+        additionalQuestion = self.driver.find_element_by_class_name("application-additional")
+        addQ = additionalQuestion.find_element_by_tag_name("textarea")
+        questionPair[addQ.get_attribute("placeholder")] = additionalQuestion
+        
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ QUESTIONPAIR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         print(questionPair)
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ QUESTIONPAIR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        #driver.find_element_by_xpath("//")
-        #print(disabilityQuestion.get_attribute("outerHTML"))   
-        # driver.find_element_by_xpath("//disabilitySignatureSection[div/@class='application-label']")
 
     def get(self, url):
         self.driver.get(url)
