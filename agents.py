@@ -124,7 +124,7 @@ class LeverAgent(Agent):
     """
 
     def submitForm(self):
-        self.driver.find_element_by_tag_name("postings-btn template-btn-submit teal").click()
+        self.driver.find_element_by_tag_name("button").submit()
 name = "Zachary Chao"
 userData = {
       "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/resume.pdf",
