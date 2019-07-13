@@ -1,6 +1,7 @@
 import os
 from googleScrape import WebScraper
 from agents import Agent, LeverAgent
+import time
 import pdb
 
 if __name__ == "__main__":
@@ -88,10 +89,10 @@ if __name__ == "__main__":
     # Fill out the job applications' easy questions
     for item in filteredCompanyDetails:
         leverCrawler = LeverAgent(False, "./chromedriver.exe")
-        print("Filling out application for " + item[3])
+        print("Applying to " + item[3] + "...")
         try:
             leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item[2]), userData)
         except:
-            print("Error in application for "+ item[3]+": "+item[1] + "(" + item[0]+").")
+            print("Error in application for "+ item[3]+": "+item[1] + " (" + item[0] + ").")
             pass
         time.sleep(60)

@@ -83,7 +83,7 @@ class LeverAgent(Agent):
                 continueIndicator += 1
             else:
                 continueIndicator += 1
-        print("There are " + str(continueIndicator) + " unanswered questions.")
+        print("There are " + str(continueIndicator) + " unanswered question(s).")
         # if continueIndicator == 0:
         #     self.submitForm()
         #     self.driver.close()             
