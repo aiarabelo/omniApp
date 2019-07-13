@@ -1,6 +1,7 @@
 import os
 from googleScrape import WebScraper
 from agents import Agent, LeverAgent
+import pdb
 
 if __name__ == "__main__":
     # Scrapes Google for companies on Lever if the .txt file of scraped URLs doesn't exist yet
@@ -16,6 +17,7 @@ if __name__ == "__main__":
         print("Extracting company names from Lever...")
         leverCompanyNames = f.read().split("\n")
         leverCompanyNames = leverCompanyNames[:-1]
+        print(type(leverCompanyNames))
         print("Extraction done!")
 
     with open("boards.greenhouse.io.txt", "r") as g:
@@ -29,6 +31,7 @@ if __name__ == "__main__":
     companyDetails = {}
     filteredCompanyDetails = []
     # TODO: Generalize this for all ATS
+
     for companyName in leverCompanyNames:
         print("Extracting job postings from " + companyName +"...")
         jobPostList = WebScraper().getJobPosts(companyName) # This is for Lever only
@@ -83,11 +86,12 @@ if __name__ == "__main__":
     }
 
     # Fill out the job applications' easy questions
-    leverCrawler = LeverAgent(False, "./chromedriver.exe")  
     for item in filteredCompanyDetails:
+        leverCrawler = LeverAgent(False, "./chromedriver.exe")
         print("Filling out application for " + item[3])
         try:
             leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item[2]), userData)
         except:
             print("Error in application for "+ item[3]+": "+item[1] + "(" + item[0]+").")
             pass
+        time.sleep(60)
