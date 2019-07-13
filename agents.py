@@ -60,7 +60,7 @@ class LeverAgent(Agent):
 
     """
     def autoInputQuestion(self, questionPair, userData):
-        print("Filling out...")
+        print("Filling out application form...")
         continueIndicator = 0
         for key in questionPair.keys():
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
@@ -89,7 +89,7 @@ class LeverAgent(Agent):
         #     self.driver.close()             
 
     #TODO: Alert if there are referral questions, or make a system for it 
-    
+
     """
     FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
     inputAnswer: List of WebElements of choices of type radio
