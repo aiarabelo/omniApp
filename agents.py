@@ -74,9 +74,9 @@ class LeverAgent(Agent):
             print(textareaAnswer)
             if key not in userData.keys():
                 additionalAnswer = input(key + ": ")
-                print(additionalAnswer)
                 userData[key] = additionalAnswer
-                print(userData[key])
+                with open(userFile, "w+") as f:
+                    f.write(json.dumps(userData))
             if len(inputAnswer) == 1:  
                 inputAnswer[0].send_keys(userData[key])
             elif len(inputAnswer) > 1:  
