@@ -54,7 +54,7 @@ class LeverAgent(Agent):
     
     """
     FUNCTION: Fills out the application page
-    questionPair: a dictionary containing questions as they key, 
+    questionPair: a dictionary containing questions as the key, 
                 and the corresponding WebElements as values
     userData: a dictionary containing the questions as the key, 
             and the answers as values
@@ -67,9 +67,17 @@ class LeverAgent(Agent):
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
             selectAnswer = questionPair[key].find_elements_by_tag_name("select")
             textareaAnswer = questionPair[key].find_elements_by_tag_name("textarea")
+            print(key)
+            print(len(inputAnswer))
+            print(len(selectAnswer))
+            print(len(textareaAnswer))
+            print(textareaAnswer)
             if key not in userData.keys():
-                continueIndicator += 1
-            elif len(inputAnswer) == 1:  
+                additionalAnswer = input(key + ": ")
+                print(additionalAnswer)
+                userData[key] = additionalAnswer
+                print(userData[key])
+            if len(inputAnswer) == 1:  
                 inputAnswer[0].send_keys(userData[key])
             elif len(inputAnswer) > 1:  
                 inputType = inputAnswer[0].get_attribute("type")
@@ -81,9 +89,11 @@ class LeverAgent(Agent):
                 select_element = Select(selectAnswer[0])
                 select_element.select_by_visible_text(userData[key])
             elif len(textareaAnswer) == 1:
+                textareaAnswer[0].send_keys(userData[key])
                 continueIndicator += 1
             else:
-                continueIndicator += 1
+                textareaAnswer[0].send_keys(userData[key])
+                continue
         print("There are " + str(continueIndicator) + " unanswered question(s).")
         # UNCOMMENT THIS TO ACTUALLY
         # if continueIndicator == 0:
@@ -127,5 +137,5 @@ if __name__ == "__main__":
     with open(userFile, "r") as f:
         userData = json.loads(f.read())
     leverCrawler = LeverAgent(False, "./chromedriver.exe")
-    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"), userData)
+    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage3.html"), userData)
 
