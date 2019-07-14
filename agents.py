@@ -96,13 +96,23 @@ class LeverAgent(Agent):
             choices = [choice.get_attribute("value") for choice in inputAnswer]
             for choice in choices:
                 print(choice)
-            additionalAnswer = input("Your choice" + ": ") 
+            additionalAnswer = input("Your choice: ") 
             if additionalAnswer in choices: 
-                self.addUserData(additionalAnswer, question, userData, inputType)
+                if inputType == "checkbox":
+                    additionalAnswers = [additionalAnswer]
+                    selectMore = input("You can have multiple answers. Select more? (Y/N): ")
+                    while selectMore == "Y":
+                        additionalAnswer = input("Your choice: ")
+                        while additionalAnswer not in choices:
+                            print("Answer not in choices. Please select your answer from the choices above.")
+                            additionalAnswer = input("Your choice: ")
+                        additionalAnswers.append(additionalAnswer)
+                        selectMore = input("You can have multiple answers. Select more? (Y/N): ")
+                self.addUserData(additionalAnswer, question, userData, inputType, additionalAnswers)
             else:
                 while additionalAnswer not in choices:
                     print("Answer not in choices. Please select your answer from the choices above.")
-                    additionalAnswer = input("Your choice" + ": ")
+                    additionalAnswer = input("Your choice: ")
                 self.addUserData(additionalAnswer, question, userData, inputType)
 
         else: 
@@ -111,22 +121,22 @@ class LeverAgent(Agent):
 
         with open(userFile, "w+") as f:
             f.write(json.dumps(userData))
+
     
     """
     FUNCTION: adds to the dictionary of user data newly answered questions
-    inputAnswer: List of WebElements of choices of type radio
+    inputType: the type of multiple choice input (radio, checkbox)
     additionalAnswer: the user's input (answer) to the newly scraped question
     question: question label as scraped from getQuestionDict, 
               this is the key in questionPair
     userData: dictionary of user data corresponding to questions    
     """
-    def addUserData(self, additionalAnswer, question, userData, inputType=None):
+    def addUserData(self, additionalAnswer, question, userData, inputType=None, additionalAnswers=None):
         if inputType == "checkbox": 
-            userData[question] = [additionalAnswer]
+            userData[question] = additionalAnswers
+
         else: 
             userData[question] = additionalAnswer 
-    
-    
     
     """
     FUNCTION: Interacts with the page (answering questions) for autoInputQuestion
