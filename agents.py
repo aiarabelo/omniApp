@@ -93,29 +93,40 @@ class LeverAgent(Agent):
         if len(inputAnswer) > 1:  
             print(question + ": ")
             inputType = inputAnswer[0].get_attribute("type")
-            if inputType == "radio":
-                choices = [choice.get_attribute("value") for choice in inputAnswer]
-                for choice in choices:
-                    print(choice)
-            elif inputType == "checkbox": 
-                self.checkboxInput(inputAnswer, userData[question])
-            additionalAnswer = input("Your choice" + ": ")
-            if additionalAnswer in choices:   
-                userData[question] = additionalAnswer
+            choices = [choice.get_attribute("value") for choice in inputAnswer]
+            for choice in choices:
+                print(choice)
+            additionalAnswer = input("Your choice" + ": ") 
+            if additionalAnswer in choices: 
+                self.addUserData(additionalAnswer, question, userData, inputType)
             else:
                 while additionalAnswer not in choices:
                     print("Answer not in choices. Please select your answer from the choices above.")
                     additionalAnswer = input("Your choice" + ": ")
-                userData[question] = additionalAnswer
-                    
+                self.addUserData(additionalAnswer, question, userData, inputType)
 
         else: 
             additionalAnswer = input(question + ": ")
-            userData[question] = additionalAnswer
+            self.addUserData(additionalAnswer, question, userData)
 
         with open(userFile, "w+") as f:
             f.write(json.dumps(userData))
-         
+    
+    """
+    FUNCTION: adds to the dictionary of user data newly answered questions
+    inputAnswer: List of WebElements of choices of type radio
+    additionalAnswer: the user's input (answer) to the newly scraped question
+    question: question label as scraped from getQuestionDict, 
+              this is the key in questionPair
+    userData: dictionary of user data corresponding to questions    
+    """
+    def addUserData(self, additionalAnswer, question, userData, inputType=None):
+        if inputType == "checkbox": 
+            userData[question] = [additionalAnswer]
+        else: 
+            userData[question] = additionalAnswer 
+    
+    
     
     """
     FUNCTION: Interacts with the page (answering questions) for autoInputQuestion
@@ -126,6 +137,7 @@ class LeverAgent(Agent):
               this is the key in questionPair
     userData: dictionary of user data corresponding to questions
     userFile: filename containing the dictionary of userData
+    continueIndicator: if some questions are unanswered, this is incremented
     
     """
 
