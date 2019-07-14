@@ -67,30 +67,12 @@ class LeverAgent(Agent):
             inputAnswer = questionPair[key].find_elements_by_tag_name("input")
             selectAnswer = questionPair[key].find_elements_by_tag_name("select")
             textareaAnswer = questionPair[key].find_elements_by_tag_name("textarea")
-            print(key)
-            print(len(inputAnswer))
-            print(len(selectAnswer))
-            print(len(textareaAnswer))
-            print(textareaAnswer)
+
             if key not in userData.keys():
                 self.answerAdditional(key, userData, userFile)
-            if len(inputAnswer) == 1:  
-                inputAnswer[0].send_keys(userData[key])
-            elif len(inputAnswer) > 1:  
-                inputType = inputAnswer[0].get_attribute("type")
-                if inputType == "radio":
-                    self.radioInput(inputAnswer, userData[key])
-                elif inputType == "checkbox": 
-                    self.checkboxInput(inputAnswer, userData[key])             
-            elif len(selectAnswer) != 0: 
-                select_element = Select(selectAnswer[0])
-                select_element.select_by_visible_text(userData[key])
-            elif len(textareaAnswer) == 1:
-                textareaAnswer[0].send_keys(userData[key])
-                continueIndicator += 1
-            else:
-                textareaAnswer[0].send_keys(userData[key])
-                continue
+
+            self.pageInteract(key, inputAnswer, selectAnswer, textareaAnswer, userData, continueIndicator)
+        
         print("There are " + str(continueIndicator) + " unanswered question(s).")
         # UNCOMMENT THIS TO ACTUALLY
         # if continueIndicator == 0:
@@ -106,13 +88,41 @@ class LeverAgent(Agent):
               this is the key in questionPair
     userData: dictionary of user data corresponding to questions
     userFile: filename containing the dictionary of userData
-    
+
     """
     def answerAdditional(self, question, userData, userFile):
         additionalAnswer = input(question + ": ")
         userData[question] = additionalAnswer
         with open(userFile, "w+") as f:
             f.write(json.dumps(userData))
+    
+    """
+    FUNCTION: Interacts with the page (answering questions) for autoInputQuestion
+    inputAnswer: List of WebElements of choices of type radio
+    selectAnswer: List of WebElements of choices of type selectAnswer
+    textareaAnswer: List of WebElements of choices of type textareaAnswer
+    question: question label as scraped from getQuestionDict, 
+              this is the key in questionPair
+    userData: dictionary of user data corresponding to questions
+    userFile: filename containing the dictionary of userData
+    
+    """
+
+    def pageInteract(self, question, inputAnswer, selectAnswer, textareaAnswer, userData, continueIndicator):
+        if len(inputAnswer) == 1:  
+            inputAnswer[0].send_keys(userData[question])
+        elif len(inputAnswer) > 1:  
+            inputType = inputAnswer[0].get_attribute("type")
+            if inputType == "radio":
+                self.radioInput(inputAnswer, userData[question])
+            elif inputType == "checkbox": 
+                self.checkboxInput(inputAnswer, userData[question])             
+        elif len(selectAnswer) != 0: 
+            select_element = Select(selectAnswer[0])
+            select_element.select_by_visible_text(userData[question])
+        elif len(textareaAnswer) == 1:
+            textareaAnswer[0].send_keys(userData[question])
+            continueIndicator += 1
 
     """
     FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
