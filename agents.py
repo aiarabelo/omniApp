@@ -69,7 +69,7 @@ class LeverAgent(Agent):
             textareaAnswer = questionPair[key].find_elements_by_tag_name("textarea")
 
             if key not in userData.keys():
-                self.answerAdditional(key, userData, userFile)
+                self.answerAdditional(key, inputAnswer, userData, userFile)
 
             self.pageInteract(key, inputAnswer, selectAnswer, textareaAnswer, userData, continueIndicator)
         
@@ -78,8 +78,6 @@ class LeverAgent(Agent):
         # if continueIndicator == 0:
         #     self.submitForm()
         #     self.driver.close()             
-
-    #TODO: Alert if there are referral questions, or make a system for it 
 
     """
     FUNCTION: Prompts user to answer any questions that 
@@ -90,11 +88,34 @@ class LeverAgent(Agent):
     userFile: filename containing the dictionary of userData
 
     """
-    def answerAdditional(self, question, userData, userFile):
-        additionalAnswer = input(question + ": ")
-        userData[question] = additionalAnswer
+    def answerAdditional(self, question, inputAnswer, userData, userFile):
+        additionalAnswer = ""
+        if len(inputAnswer) > 1:  
+            print(question + ": ")
+            inputType = inputAnswer[0].get_attribute("type")
+            if inputType == "radio":
+                choices = [choice.get_attribute("value") for choice in inputAnswer]
+                for choice in choices:
+                    print(choice)
+            elif inputType == "checkbox": 
+                self.checkboxInput(inputAnswer, userData[question])
+            additionalAnswer = input("Your choice" + ": ")
+            if additionalAnswer in choices:   
+                userData[question] = additionalAnswer
+            else:
+                while additionalAnswer not in choices:
+                    print("Answer not in choices. Please select your answer from the choices above.")
+                    additionalAnswer = input("Your choice" + ": ")
+                userData[question] = additionalAnswer
+                    
+
+        else: 
+            additionalAnswer = input(question + ": ")
+            userData[question] = additionalAnswer
+
         with open(userFile, "w+") as f:
             f.write(json.dumps(userData))
+         
     
     """
     FUNCTION: Interacts with the page (answering questions) for autoInputQuestion
@@ -123,6 +144,8 @@ class LeverAgent(Agent):
         elif len(textareaAnswer) == 1:
             textareaAnswer[0].send_keys(userData[question])
             continueIndicator += 1
+        else: 
+            print("Error. Check special cases.")
 
     """
     FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
@@ -153,11 +176,10 @@ class LeverAgent(Agent):
         self.driver.find_element_by_tag_name("button").submit()
 
 
-
 if __name__ == "__main__":
     userFile = "userdata.json"
     with open(userFile, "r") as f:
         userData = json.loads(f.read())
     leverCrawler = LeverAgent(False, "./chromedriver.exe")
-    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage3.html"), userData)
+    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"), userData)
 
