@@ -73,10 +73,7 @@ class LeverAgent(Agent):
             print(len(textareaAnswer))
             print(textareaAnswer)
             if key not in userData.keys():
-                additionalAnswer = input(key + ": ")
-                userData[key] = additionalAnswer
-                with open(userFile, "w+") as f:
-                    f.write(json.dumps(userData))
+                self.answerAdditional(key, userData, userFile)
             if len(inputAnswer) == 1:  
                 inputAnswer[0].send_keys(userData[key])
             elif len(inputAnswer) > 1:  
@@ -101,6 +98,21 @@ class LeverAgent(Agent):
         #     self.driver.close()             
 
     #TODO: Alert if there are referral questions, or make a system for it 
+
+    """
+    FUNCTION: Prompts user to answer any questions that 
+              haven't been answered and adds it to the json file
+    question: question label as scraped from getQuestionDict, 
+              this is the key in questionPair
+    userData: dictionary of user data corresponding to questions
+    userFile: filename containing the dictionary of userData
+    
+    """
+    def answerAdditional(self, question, userData, userFile):
+        additionalAnswer = input(question + ": ")
+        userData[question] = additionalAnswer
+        with open(userFile, "w+") as f:
+            f.write(json.dumps(userData))
 
     """
     FUNCTION: Fills out a radio input; used in the function "autoInputQuestion"
