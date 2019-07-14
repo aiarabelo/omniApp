@@ -1,4 +1,9 @@
-from sqlalchemy import Table, COlumn, Integer, String, MetaData, ForeignKey
+import sqlalchemy
+from sqlalchemy import create_engine
+from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+
+engine = create_engine('sqlite:///:memory:', echo=True)
+
 metadata = MetaData()
 users = Table('users', metadata,
         Column('id', Integer, primary_key = True)
@@ -12,6 +17,4 @@ addresses = Table('addresses', metadata,
         Column('email_address', String, nullable = False)
 
 )
-
-print(users)
-print(addresses)
+ 
