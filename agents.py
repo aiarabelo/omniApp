@@ -103,16 +103,12 @@ class LeverAgent(Agent):
                     selectMore = input("You can have multiple answers. Select more? (Y/N): ")
                     while selectMore == "Y":
                         additionalAnswer = input("Your choice: ")
-                        while additionalAnswer not in choices:
-                            print("Answer not in choices. Please select your answer from the choices above.")
-                            additionalAnswer = input("Your choice: ")
+                        self.checkIfValidChoice(additionalAnswer, choices)
                         additionalAnswers.append(additionalAnswer)
                         selectMore = input("You can have multiple answers. Select more? (Y/N): ")
                 self.addUserData(additionalAnswer, question, userData, inputType, additionalAnswers)
             else:
-                while additionalAnswer not in choices:
-                    print("Answer not in choices. Please select your answer from the choices above.")
-                    additionalAnswer = input("Your choice: ")
+                self.checkIfValidChoice(additionalAnswer, choices)
                 self.addUserData(additionalAnswer, question, userData, inputType)
 
         else: 
@@ -122,7 +118,16 @@ class LeverAgent(Agent):
         with open(userFile, "w+") as f:
             f.write(json.dumps(userData))
 
-    
+    """
+    FUNCTION: checks if the answers are in the choices 
+    additionalAnswer: the user's input (answer) to the newly scraped question
+    choices: a list of choices for a multiple choice question
+    """
+    def checkIfValidChoice(self, additionalAnswer, choices):
+        while additionalAnswer not in choices:
+            print("Answer not in choices. Please select your answer from the choices above.")
+            additionalAnswer = input("Your choice: ")
+
     """
     FUNCTION: adds to the dictionary of user data newly answered questions
     inputType: the type of multiple choice input (radio, checkbox)
