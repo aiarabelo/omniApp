@@ -30,11 +30,11 @@ class Agent:
             print(questionLabel.text + "(" +str(len(questionLabel.text))+")")
             print("@@@@ outerHTML of each label @@@@ " + questionLabel.get_attribute("innerHTML"))
 
-        # For Lever's "Additional Question" for cover letters/supplementary information. 
+        # For Lever's "Additional Question" for cover letters/supplementary information
         additionalQuestion = self.driver.find_element_by_class_name("application-additional")
         addQ = additionalQuestion.find_element_by_tag_name("textarea")
         questionPair[addQ.get_attribute("placeholder")] = additionalQuestion
-        
+
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ QUESTIONPAIR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
         print(questionPair)
         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ QUESTIONPAIR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")

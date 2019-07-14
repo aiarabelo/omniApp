@@ -311,3 +311,11 @@
 [0712/134203.068:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
 [0712/134203.068:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
 [0712/134203.068:ERROR:exception_snapshot_win.cc(98)] thread ID 16756 not found in process
+[0713/182236.874:ERROR:file_io_win.cc(170)] CreateFile C:\Users\AIARAB~1\AppData\Local\Temp\scoped_dir21520_3757\Crashpad\reports\2f9eab16-4a6e-4709-820a-7b1b3d1ef5df.dmp: The system cannot find the path specified. (0x3)
+[0713/182238.514:ERROR:crash_report_exception_handler.cc(97)] PrepareNewCrashReport failed
+[0713/205801.719:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0713/205801.722:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0713/205801.722:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0713/205801.722:ERROR:process_reader_win.cc(151)] SuspendThread: Access is denied. (0x5)
+[0713/205801.722:ERROR:process_reader_win.cc(123)] NtOpenThread: {Access Denied} A process has requested access to an object, but has not been granted those access rights. (0xc0000022)
+[0713/205801.736:ERROR:exception_snapshot_win.cc(98)] thread ID 20980 not found in process

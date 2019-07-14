@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import Select
 import time
+import json
 
 class Agent:
     def __init__(self, headless, chrome_executable_path):
@@ -84,6 +85,7 @@ class LeverAgent(Agent):
             else:
                 continueIndicator += 1
         print("There are " + str(continueIndicator) + " unanswered question(s).")
+        # UNCOMMENT THIS TO ACTUALLY
         # if continueIndicator == 0:
         #     self.submitForm()
         #     self.driver.close()             
