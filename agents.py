@@ -89,18 +89,17 @@ class LeverAgent(Agent):
     """
     def answerAdditional(self, question, inputAnswer, userData, userFile):
         validAdditionalAnswer = ""
-        # additionalAnswers = []
+        additionalAnswers = []
         if len(inputAnswer) > 1:  
-            print(question + ": ")
             inputType = inputAnswer[0].get_attribute("type")
             choices = [choice.get_attribute("value") for choice in inputAnswer]
+            print(question + ": ")
             for choice in choices:
                 print(choice)
             additionalAnswer = input("Your choice: ") 
             if inputType == "checkbox":
                 validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
-                additionalAnswers = [validAdditionalAnswer]
-                # if additionalAnswer in choices:
+                additionalAnswers.append(validAdditionalAnswer)
                 selectMore = input("You can have multiple answers. Select more? (Y/N): ")
                 while selectMore == "Y":
                     additionalAnswer = input("Your choice: ")
@@ -108,6 +107,9 @@ class LeverAgent(Agent):
                     additionalAnswers.append(validAdditionalAnswer)
                     selectMore = input("You can have multiple answers. Select more? (Y/N): ")
                 self.addUserData(validAdditionalAnswer, question, userData, inputType, additionalAnswers)
+            elif inputType == "radio":
+                validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
+                self.addUserData(validAdditionalAnswer, question, userData)
         else: 
             additionalAnswer = input(question + ": ")
             self.addUserData(additionalAnswer, question, userData)
