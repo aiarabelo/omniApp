@@ -23,7 +23,7 @@ class Agent:
     questionPair: a dictionary containing questions as they key, 
                 and the corresponding WebElements as values
     questionLabel and additionalQuestionLabel: A question in the application (string)
-    Returns questionPair, a dictionary containing questions and its corresponding webelement
+    Returns questionPair: a dictionary containing questions and its corresponding webelement
     """
    
     def getQuestionDict(self, applyURL):
@@ -57,7 +57,7 @@ class LeverAgent(Agent):
     questionPair: a dictionary containing questions as the key, 
                 and the corresponding WebElements as values
     userData: a dictionary containing the questions as the key, 
-            and the answers as values
+            and the answers as values    
 
     """
     def autoInputQuestion(self, questionPair, userData):
@@ -73,7 +73,7 @@ class LeverAgent(Agent):
             self.pageInteract(key, inputAnswer, selectAnswer, textareaAnswer, userData, continueIndicator)
         
         print("There are " + str(continueIndicator) + " unanswered question(s).")
-        # UNCOMMENT THIS TO ACTUALLY
+        # UNCOMMENT THIS TO ACTUALLY 
         # if continueIndicator == 0:
         #     self.submitForm()
         #     self.driver.close()             
@@ -83,6 +83,7 @@ class LeverAgent(Agent):
               haven't been answered and adds it to the json file
     question: question label as scraped from getQuestionDict, 
               this is the key in questionPair
+    inputAnswer: WebElement of input type questions (radio, checkbox)
     userData: dictionary of user data corresponding to questions
     userFile: filename containing the dictionary of userData
 
@@ -121,8 +122,11 @@ class LeverAgent(Agent):
     FUNCTION: checks if the answers are in the choices 
     additionalAnswer: the user's input (answer) to the newly scraped question
     choices: a list of choices for a multiple choice question
-    Returns "True" if choice is valid
+    Returns validAdditionalAnswer: a user input that is sure to be in the choices
     """
+
+    # TODO: Maybe convert user input and choices to lowercase to remove problems with different cases
+
     def checkIfValidChoice(self, additionalAnswer, choices):
         while additionalAnswer not in choices:
             print("Answer not in choices. Please select your answer from the choices above.")
@@ -147,17 +151,15 @@ class LeverAgent(Agent):
     
     """
     FUNCTION: Interacts with the page (answering questions) for autoInputQuestion
+    question: question label as scraped from getQuestionDict, 
+              this is the key in questionPair
     inputAnswer: List of WebElements of choices of type radio
     selectAnswer: List of WebElements of choices of type selectAnswer
     textareaAnswer: List of WebElements of choices of type textareaAnswer
-    question: question label as scraped from getQuestionDict, 
-              this is the key in questionPair
     userData: dictionary of user data corresponding to questions
-    userFile: filename containing the dictionary of userData
     continueIndicator: if some questions are unanswered, this is incremented
     
     """
-
     def pageInteract(self, question, inputAnswer, selectAnswer, textareaAnswer, userData, continueIndicator):
         if len(inputAnswer) == 1:  
             inputAnswer[0].send_keys(userData[question])
@@ -182,6 +184,7 @@ class LeverAgent(Agent):
     userAnswer: A string, the answer of the user to the question 
     
     """
+
     def radioInput(self, inputAnswer, userAnswer):
         choices = [choice.get_attribute("value") for choice in inputAnswer]
         index = choices.index(userAnswer)
@@ -192,15 +195,17 @@ class LeverAgent(Agent):
     inputAnswer: List of WebElements of choices that are checkboxes 
     userAnswer: A string, the answer(s) of the user to the question 
     """
+
     def checkboxInput(self, inputAnswer, userAnswers): 
         for userAnswer in userAnswers:
             choices = [choice.get_attribute("value") for choice in inputAnswer]
             index = choices.index(userAnswer)
-            self.driver.execute_script("arguments[0].click();", inputAnswer[index])
-    
+            self.driver.execute_script("arguments[0].click();", inputAnswer[index])    
+
     """
     FUNCTION: Submits the form
     """
+
     def submitForm(self):
         self.driver.find_element_by_tag_name("button").submit()
 
