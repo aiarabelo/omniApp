@@ -89,6 +89,7 @@ class LeverAgent(Agent):
     """
     def answerAdditional(self, question, inputAnswer, userData, userFile):
         validAdditionalAnswer = ""
+        # additionalAnswers = []
         if len(inputAnswer) > 1:  
             print(question + ": ")
             inputType = inputAnswer[0].get_attribute("type")
@@ -96,35 +97,17 @@ class LeverAgent(Agent):
             for choice in choices:
                 print(choice)
             additionalAnswer = input("Your choice: ") 
-            additionalAnswers = []
             if inputType == "checkbox":
-                if additionalAnswer in choices:
-                    additionalAnswers = [additionalAnswer]
-                    selectMore = input("You can have multiple answers. Select more? (Y/N): ")
-                    while selectMore == "Y":
-                        additionalAnswer = input("Your choice: ")
-                        validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
-                        additionalAnswers.append(validAdditionalAnswer)
-                        selectMore = input("You can have multiple answers. Select more? (Y/N): ")
-                else:
+                validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
+                additionalAnswers = [validAdditionalAnswer]
+                # if additionalAnswer in choices:
+                selectMore = input("You can have multiple answers. Select more? (Y/N): ")
+                while selectMore == "Y":
+                    additionalAnswer = input("Your choice: ")
                     validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
                     additionalAnswers.append(validAdditionalAnswer)
-                    self.addUserData(validAdditionalAnswer, question, userData, inputType, additionalAnswers) 
-            
-            # if additionalAnswer in choices: 
-            #     if inputType == "checkbox":
-            #         additionalAnswers = [additionalAnswer]
-            #         selectMore = input("You can have multiple answers. Select more? (Y/N): ")
-            #         while selectMore == "Y":
-            #             additionalAnswer = input("Your choice: ")
-            #             validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
-            #             additionalAnswers.append(validAdditionalAnswer)
-            #             selectMore = input("You can have multiple answers. Select more? (Y/N): ")
-            #     self.addUserData(additionalAnswer, question, userData, inputType, additionalAnswers)
-            # else:
-            #     validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
-            #     self.addUserData(validAdditionalAnswer, question, userData, inputType)
-
+                    selectMore = input("You can have multiple answers. Select more? (Y/N): ")
+                self.addUserData(validAdditionalAnswer, question, userData, inputType, additionalAnswers)
         else: 
             additionalAnswer = input(question + ": ")
             self.addUserData(additionalAnswer, question, userData)
@@ -142,7 +125,7 @@ class LeverAgent(Agent):
         while additionalAnswer not in choices:
             print("Answer not in choices. Please select your answer from the choices above.")
             additionalAnswer = input("Your choice: ")
-            if additionalAnswer in choices:
+        if additionalAnswer in choices:
                 validAdditionalAnswer = additionalAnswer
         return validAdditionalAnswer
 
