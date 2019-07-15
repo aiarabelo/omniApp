@@ -70,7 +70,6 @@ class LeverAgent(Agent):
 
             if key not in userData.keys():
                 self.answerAdditional(key, inputAnswer, userData, userFile)
-
             self.pageInteract(key, inputAnswer, selectAnswer, textareaAnswer, userData, continueIndicator)
         
         print("There are " + str(continueIndicator) + " unanswered question(s).")
@@ -89,7 +88,7 @@ class LeverAgent(Agent):
 
     """
     def answerAdditional(self, question, inputAnswer, userData, userFile):
-        additionalAnswer = ""
+        validAdditionalAnswer = ""
         if len(inputAnswer) > 1:  
             print(question + ": ")
             inputType = inputAnswer[0].get_attribute("type")
@@ -97,19 +96,34 @@ class LeverAgent(Agent):
             for choice in choices:
                 print(choice)
             additionalAnswer = input("Your choice: ") 
-            if additionalAnswer in choices: 
-                if inputType == "checkbox":
+            additionalAnswers = []
+            if inputType == "checkbox":
+                if additionalAnswer in choices:
                     additionalAnswers = [additionalAnswer]
                     selectMore = input("You can have multiple answers. Select more? (Y/N): ")
                     while selectMore == "Y":
                         additionalAnswer = input("Your choice: ")
-                        self.checkIfValidChoice(additionalAnswer, choices)
-                        additionalAnswers.append(additionalAnswer)
+                        validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
+                        additionalAnswers.append(validAdditionalAnswer)
                         selectMore = input("You can have multiple answers. Select more? (Y/N): ")
-                self.addUserData(additionalAnswer, question, userData, inputType, additionalAnswers)
-            else:
-                self.checkIfValidChoice(additionalAnswer, choices)
-                self.addUserData(additionalAnswer, question, userData, inputType)
+                else:
+                    validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
+                    additionalAnswers.append(validAdditionalAnswer)
+                    self.addUserData(validAdditionalAnswer, question, userData, inputType, additionalAnswers) 
+            
+            # if additionalAnswer in choices: 
+            #     if inputType == "checkbox":
+            #         additionalAnswers = [additionalAnswer]
+            #         selectMore = input("You can have multiple answers. Select more? (Y/N): ")
+            #         while selectMore == "Y":
+            #             additionalAnswer = input("Your choice: ")
+            #             validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
+            #             additionalAnswers.append(validAdditionalAnswer)
+            #             selectMore = input("You can have multiple answers. Select more? (Y/N): ")
+            #     self.addUserData(additionalAnswer, question, userData, inputType, additionalAnswers)
+            # else:
+            #     validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
+            #     self.addUserData(validAdditionalAnswer, question, userData, inputType)
 
         else: 
             additionalAnswer = input(question + ": ")
@@ -122,11 +136,15 @@ class LeverAgent(Agent):
     FUNCTION: checks if the answers are in the choices 
     additionalAnswer: the user's input (answer) to the newly scraped question
     choices: a list of choices for a multiple choice question
+    Returns "True" if choice is valid
     """
     def checkIfValidChoice(self, additionalAnswer, choices):
         while additionalAnswer not in choices:
             print("Answer not in choices. Please select your answer from the choices above.")
             additionalAnswer = input("Your choice: ")
+            if additionalAnswer in choices:
+                validAdditionalAnswer = additionalAnswer
+        return validAdditionalAnswer
 
     """
     FUNCTION: adds to the dictionary of user data newly answered questions
@@ -139,7 +157,6 @@ class LeverAgent(Agent):
     def addUserData(self, additionalAnswer, question, userData, inputType=None, additionalAnswers=None):
         if inputType == "checkbox": 
             userData[question] = additionalAnswers
-
         else: 
             userData[question] = additionalAnswer 
     
