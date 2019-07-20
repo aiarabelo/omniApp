@@ -2,6 +2,7 @@ import os
 from googleScrape import WebScraper
 from agents import Agent, LeverAgent
 import time
+from createCompaniesTable import Company
 import pdb
 
 if __name__ == "__main__":
@@ -13,11 +14,12 @@ if __name__ == "__main__":
     if not os.path.exists("./boards.greenhouse.io.txt"):
         WebScraper().companyInfo("boards.greenhouse.io")
     
-    # Extracts the company names from the ATS text files
+    # Extracts the company names from the ATS text files (This is hardcoded; remove this when generalized to Greenhouse too)
     with open("jobs.lever.co.txt", "r") as f:
         print("Extracting company names from Lever...")
         leverCompanyNames = f.read().split("\n")
         leverCompanyNames = leverCompanyNames[:-1]
+
         print(type(leverCompanyNames))
         print("Extraction done!")
 
@@ -43,50 +45,19 @@ if __name__ == "__main__":
             pass
         print(companyDetails[companyName])
         print("Extraction complete for "+ companyName+"!")
+        print("Filtering...")
         filteredCompanyDetails.extend(list(filter(lambda x : "Intern" in x[0] and "Software Engineer" in x[1], companyDetails[companyName])))
     
     # Filters out what we want for the job commitment and title from the dictionary "companyDetails"
-    print("Filtering...")
     print("Filtered! Here is what's left:")
     print(filteredCompanyDetails)
     print("@@@@@ END OF FILTERED COMPANY DETAILS @@@@@")
-    
-    userData = {
-        "Resume/CV" : "C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/resume.pdf",
-        "Full name" : "Zachary Chao",
-        "Your name" : "Zachary Chao",
-        "Email" : "zachchao@berkeley.edu",
-        "Phone" : "760-889-1965",
-        "Current company" : "CrossInstall",
-        "Twitter URL" : "",
-        "LinkedIn URL" : "https://www.linkedin.com/in/zacharychao/",
-        "GitHub URL" : "https://www.github.com/zachchao", 
-        "Portfolio URL" : "http://www.zacharychao.com/",
-        "Other website" : "",
-        "At the time of applying, are you 18 years of age or older?" : "Yes",
-        "Are you legally authorized to work in the United States?" : "Yes",
-        "Are you legally authorized to work in the country for which you are applying" : "Yes",
-        "Are you currently authorized to work in the U.S.?" : "Yes",
-        "Will you now or in the future require Rigetti Quantum Computing to commence (\"sponsor\") an immigration case in order to employ you?" : "No",
-        "Will you now or in the future require sponsorship for employment visa status e g H 1B etc" : "No",
-        "Will you now or in the future require sponsorship for employment visa status" : "No",
-        "When are you seeking to begin a full-time position?" : "Immediately", 
-        "Do you currently, or in the future will you, require sponsorship to legally work in the United States?" : "No",
-        "Were you referred to Rigetti?" : ["No"], 
-        "If so, by whom?" : "",
-        "Language Skill s Check all that apply" : ["English (ENG)"],
-        "Where are you applying from" : "United States [USA]",
-        "How did you hear about this job?" : "LinkedIn",
-        "Please tell us how you heard about this opportunity" : "Other",
-        "Gender" : "Male",
-        "Race" : "Asian (Not Hispanic or Latino)",
-        "Veteran status" : "I am not a protected veteran",
-        "I certify the information and answers provided by me within this application are true and correct." : "I Accept / I Agree",
-        "Disability status" : "No, I don't have a disability",
-        "Today’s date" : "07/09/19"
-    }
 
     # Fill out the job applications' easy questions
+    userFile = "userdata.json"
+    with open(userFile, "r") as f:
+        userData = json.loads(f.read())
+        
     for item in filteredCompanyDetails:
         leverCrawler = LeverAgent(False, "./chromedriver.exe")
         print("Applying to " + item[3] + "...")

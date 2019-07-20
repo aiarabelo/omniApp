@@ -4,6 +4,7 @@ import re
 import requests
 import json
 from jobPost import JobPost
+from createCompaniesTable import Company
 
 atsURLs = ['boards.greenhouse.io', 'jobs.lever.co']
 
@@ -37,11 +38,13 @@ class WebScraper:
             if r is not None:
                 print("FILTERED! " + r.group(1))
                 filteredURLs.add(r.group(1))
+            Company.insertInfo(r.group(1), baseURL, url)
 
         companies = list(filteredURLs)
         with open(baseURL + ".txt", "w+") as f:
             for company in companies:
                 f.write(company + "\n")
+        
     ''' 
     TODO: This is currently hardcoded for lever only, fix that
     '''

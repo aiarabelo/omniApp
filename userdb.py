@@ -1,20 +1,21 @@
-import sqlalchemy
-from sqlalchemy import create_engine
-from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
+import psycopg2
 
-engine = create_engine('sqlite:///:memory:', echo=True)
+def insertCompanyInfo(company_name, ats, url):
+        conn = psycopg2.connect(host="localhost", database = "omniApp", user = "postgres", password = "l1pt0n")
+        cur = conn.cursor()
+        cur.execute("INSERT INTO companies (company_name, ats, url) VALUES (%s,%s,%s)", ('company_name', 'ats', 'url'))
+        id = cur.fetchone()[0]
+        conn.commit()
+        cur.close()
+insertCompanyInfo("company", "ats", "url")
 
-metadata = MetaData()
-users = Table('users', metadata,
-        Column('id', Integer, primary_key = True)
-        Column('name', String)
-        Column('fullname', String),
-)
+conn = psycopg2.connect(host="localhost", database = "omniApp", user = "postgres", password = "l1pt0n")
+cur = conn.cursor()
+# insert_query = """ INSERT INTO mobile (ID, MODEL, PRICE) VALUES (%s,%s,%s)"""  
+# record_to_insert = (5, 'One Plus 6', 950)
+# cursor.execute(postgres_insert_query, record_to_insert)
 
-addresses = Table('addresses', metadata,
-        Column('id', Integer, primary_key = True),
-        Column('user_id', None, ForeignKey('users.id')),
-        Column('email_address', String, nullable = False)
-
-)
- 
+x = cur.execute("SELECT * FROM companies")
+print(x)
+print(conn)
+print(cur)

@@ -102,7 +102,7 @@ class LeverAgent(Agent):
                 validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
                 additionalAnswers.append(validAdditionalAnswer)
                 selectMore = input("You can have multiple answers. Select more? (Y/N): ")
-                while selectMore == "Y":
+                while selectMore.lower() == "y":
                     additionalAnswer = input("Your choice: ")
                     validAdditionalAnswer = self.checkIfValidChoice(additionalAnswer, choices)
                     additionalAnswers.append(validAdditionalAnswer)
@@ -128,10 +128,12 @@ class LeverAgent(Agent):
     # TODO: Maybe convert user input and choices to lowercase to remove problems with different cases
 
     def checkIfValidChoice(self, additionalAnswer, choices):
-        while additionalAnswer not in choices:
+        lowerChoices = [choice.lower() for choice in choices]
+        while additionalAnswer.lower() not in lowerChoices:
             print("Answer not in choices. Please select your answer from the choices above.")
             additionalAnswer = input("Your choice: ")
-        if additionalAnswer in choices:
+            additionalAnswer = additionalAnswer.lower()
+        if additionalAnswer.lower() in lowerChoices:
                 validAdditionalAnswer = additionalAnswer
         return validAdditionalAnswer
 
