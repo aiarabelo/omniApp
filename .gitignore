@@ -1,1 +1,6 @@
 *.pyc
+yoyo.ini
+env.json
+.google-cookie
+__pycache__
+__pycache__/*

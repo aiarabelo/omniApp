@@ -14,6 +14,7 @@ if __name__ == "__main__":
     companyDetails = {}
     filteredCompanyDetails = []
 
+    # Hardcoded: Getting company names off the ATS
     leverCompanyNames = Company().getCompanyNames("jobs.lever.co")
     
     commitment = input("Desired commitment: ")
@@ -24,7 +25,7 @@ if __name__ == "__main__":
 
     # TODO: Generalize this for all ATS
     for companyName in leverCompanyNames:
-        print("Extracting job postings from " + companyName +"...")
+        print("Extracting job postings from " + companyName + "...")
         jobPostList = WebScraper().getJobPosts(companyName) # This is for Lever only
         try:
             companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
@@ -32,7 +33,7 @@ if __name__ == "__main__":
             print("Error for extracting details from " + companyName)
             pass
         print(companyDetails[companyName])
-        print("Extraction complete for "+ companyName+"!")
+        print("Extraction complete for " + companyName + "!")
         filteredCompanyDetails.extend(WebScraper().filterCompany(commitment, position, companyName, companyDetails))
     
     # Filters out what we want for the job commitment and title from the dictionary "companyDetails"
@@ -47,12 +48,13 @@ if __name__ == "__main__":
         userData = json.loads(f.read())
 
     # Fill out the job applications' easy questions
+    # TODO: Clear textbox before sending keys
     for item in filteredCompanyDetails:
         leverCrawler = LeverAgent(False, "./chromedriver.exe")
         print("Applying to " + item[3] + "...")
         try:
             leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item[2]), userData)
         except:
-            print("Error in application for "+ item[3]+": "+item[1] + " (" + item[0] + ").")
+            print("Error in application for " + item[3] + ": " + item[1] + " (" + item[0] + ").")
             pass
         time.sleep(60)
