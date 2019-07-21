@@ -4,38 +4,25 @@ from agents import Agent, LeverAgent
 import time
 from companiesdb import Company
 import psycopg2
+import json
 import pdb
 
+
 if __name__ == "__main__":
-    # Scrapes Google for companies on Lever if the .txt file of scraped URLs doesn't exist yet
-    if not os.path.exists("./jobs.lever.co.txt"):
-        WebScraper().companyInfo("jobs.lever.co")
-
-    # Scrapes Google for companies on Greenhouse if the .txt file of scraped URLs doesn't exist yet
-    if not os.path.exists("./boards.greenhouse.io.txt"):
-        WebScraper().companyInfo("boards.greenhouse.io")
-    
-    # Extracts the company names from the ATS text files (This is hardcoded; remove this when generalized to Greenhouse too)
-    with open("jobs.lever.co.txt", "r") as f:
-        print("Extracting company names from Lever...")
-        leverCompanyNames = f.read().split("\n")
-        leverCompanyNames = leverCompanyNames[:-1]
-
-        print(type(leverCompanyNames))
-        print("Extraction done!")
-
-    with open("boards.greenhouse.io.txt", "r") as g:
-        print("Extracting company names from Greenhouse...")
-        greenhouseCompanyNames = g.read().split("\n")   
-        greenhouseCompanyNames = greenhouseCompanyNames[:-1]     
-        print("Extraction done!")
-
     # companyDetails: dictionary, with the company name as key and its value being a list of job postings for that company
     # Lists details of the job posting: commitment, title, and applyUrl
     companyDetails = {}
     filteredCompanyDetails = []
-    # TODO: Generalize this for all ATS
 
+    leverCompanyNames = Company().getCompanyNames("jobs.lever.co")
+    
+    commitment = input("Desired commitment: ")
+    position = input("Desired position: ") 
+    # Hardcoded: 
+    # commitment = Intern
+    # position = Software Engineer
+
+    # TODO: Generalize this for all ATS
     for companyName in leverCompanyNames:
         print("Extracting job postings from " + companyName +"...")
         jobPostList = WebScraper().getJobPosts(companyName) # This is for Lever only
@@ -46,8 +33,7 @@ if __name__ == "__main__":
             pass
         print(companyDetails[companyName])
         print("Extraction complete for "+ companyName+"!")
-        print("Filtering...")
-        filteredCompanyDetails.extend(list(filter(lambda x : "Intern" in x[0] and "Software Engineer" in x[1], companyDetails[companyName])))
+        filteredCompanyDetails.extend(WebScraper().filterCompany(commitment, position, companyName, companyDetails))
     
     # Filters out what we want for the job commitment and title from the dictionary "companyDetails"
     print("Filtered! Here is what's left:")
@@ -55,9 +41,11 @@ if __name__ == "__main__":
     print("@@@@@ END OF FILTERED COMPANY DETAILS @@@@@")
 
     # Load user data
+    # TODO: Use a database instead
     userFile = "userdata.json"
     with open(userFile, "r") as f:
         userData = json.loads(f.read())
+
     # Fill out the job applications' easy questions
     for item in filteredCompanyDetails:
         leverCrawler = LeverAgent(False, "./chromedriver.exe")

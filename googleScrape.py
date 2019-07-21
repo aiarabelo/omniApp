@@ -6,6 +6,7 @@ import json
 from jobPost import JobPost
 from companiesdb import Company
 
+
 atsURLs = ['boards.greenhouse.io', 'jobs.lever.co']
 
 class WebScraper:
@@ -52,6 +53,12 @@ class WebScraper:
         r = requests.get("https://api.lever.co/v0/postings/" + companyName)
         j = json.loads(r.text)
         return [JobPost(d) for d in j]
+    
+    # TODO: This filters for commitment and position only.
+    #       For final product, filter for others
+    def filterCompany(self, commitment, position, companyName, companyDetails):
+        filteredCompany = list(filter(lambda x : commitment in x[0] and position in x[1], companyDetails[companyName]))
+        return filteredCompany
 
 if __name__ == "__main__":
     for atsURL in atsURLs:

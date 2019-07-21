@@ -1,5 +1,6 @@
 import psycopg2
 
+
 class Company:
     def insertInfo(self, company_name, ats, url):
         conn = psycopg2.connect(host="localhost", database = "omniApp", user = "postgres", password = "l1pt0n")
@@ -21,13 +22,15 @@ class Company:
         cursor.close()
         conn.close()
     
-    def getInfo(self, ats):
+    def getCompanyNames(self, ats):
         conn = psycopg2.connect(host="localhost", database = "omniApp", user = "postgres", password = "l1pt0n")
         cursor = conn.cursor()
         
-        cursor.execute(""" SELECT company_name FROM companies WHERE 
+        cursor.execute(""" SELECT company_name FROM companies WHERE ats = %s""", (ats,))
         
-        """)
-        
+        company_names = [company_name[0] for company_name in cursor.fetchall()]
+
         cursor.close()
         conn.close()
+    
+        return company_names
