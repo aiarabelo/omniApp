@@ -2,6 +2,12 @@ import psycopg2
 
 
 class Company:
+    """
+    FUNCTION: Creates "companies" database, and inserts a company's name, ats used, and url into the database
+    company_name: name of the company, corresponding to what's used in the URL
+    ats: ATS used by the site (Greenhouse, Lever)
+    url: URL of the company on the ats
+    """
     def insertInfo(self, company_name, ats, url):
         conn = psycopg2.connect(host="localhost", database = "omniApp", user = "postgres", password = "l1pt0n")
         cursor = conn.cursor()
@@ -21,6 +27,10 @@ class Company:
         conn.commit()
         cursor.close()
         conn.close()
+    """
+    FUNCTION: Retrieves company names from the database based on the ats used
+    returns company_names, a list of company names on an ATS
+    """
     
     def getCompanyNames(self, ats):
         conn = psycopg2.connect(host="localhost", database = "omniApp", user = "postgres", password = "l1pt0n")

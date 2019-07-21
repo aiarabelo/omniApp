@@ -49,11 +49,25 @@ class WebScraper:
     ''' 
     TODO: This is currently hardcoded for lever only, fix that
     '''
+    """
+    FUNCTION: Gets the job posts for each company
+    companyName: name of the company
+    JobPost: a class in jobPost.py that retrieves job post attributes
+    returns a list of job posts with relevant information
+    """
     def getJobPosts(self, companyName):
         r = requests.get("https://api.lever.co/v0/postings/" + companyName)
         j = json.loads(r.text)
         return [JobPost(d) for d in j]
     
+    """
+    FUNCTION: Filters job postings for a company based on the desired commitment and position
+    commitment: desired commitment (Intern, full-time, etc.)
+    position: desired position (Software engineer, etc.)
+    companyName: name of the company whose job postings will be filtered
+    companyDetails: List of job postings for each companyName
+    returns filteredCompany, a filtered list of job postings for a company
+    """
     # TODO: This filters for commitment and position only.
     #       For final product, filter for others
     def filterCompany(self, commitment, position, companyName, companyDetails):
