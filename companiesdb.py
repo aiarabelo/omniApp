@@ -15,7 +15,6 @@ class Company:
     url: URL of the company on the ats
     """
     def insertInfo(self):
-        #cursor.execute("DROP TABLE IF EXISTS companies;")
         cursor.execute("""CREATE TABLE IF NOT EXISTS companies (
             id SERIAL PRIMARY KEY,
             company_name TEXT UNIQUE,
@@ -47,3 +46,5 @@ class Company:
         conn.close()
     
         return company_names
+
+#cursor.execute("DROP TABLE IF EXISTS companies;")

@@ -42,15 +42,16 @@ if __name__ == "__main__":
     print("@@@@@ END OF FILTERED COMPANY DETAILS @@@@@")
 
     # Load user data
-    # TODO: Use a database instead
-    userFile = "userdata.json"
-    with open(userFile, "r") as f:
+    # TODO: Use a database instead 
+    with open("userdata.json", "r") as f:
         userData = json.loads(f.read())
+    with open("env.json", "r") as g:
+        credentials = json.loads(g.read())
 
     # Fill out the job applications' easy questions
     # TODO: Clear textbox before sending keys
     for item in filteredCompanyDetails:
-        leverCrawler = LeverAgent(False, "./chromedriver.exe")
+        leverCrawler = LeverAgent(False, credentials["CHROME_EXECUTABLE_PATH"])
         print("Applying to " + item[3] + "...")
         try:
             leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item[2]), userData)
