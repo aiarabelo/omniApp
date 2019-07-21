@@ -2,7 +2,8 @@ import os
 from googleScrape import WebScraper
 from agents import Agent, LeverAgent
 import time
-from createCompaniesTable import Company
+from companiesdb import Company
+import psycopg2
 import pdb
 
 if __name__ == "__main__":
@@ -53,11 +54,11 @@ if __name__ == "__main__":
     print(filteredCompanyDetails)
     print("@@@@@ END OF FILTERED COMPANY DETAILS @@@@@")
 
-    # Fill out the job applications' easy questions
+    # Load user data
     userFile = "userdata.json"
     with open(userFile, "r") as f:
         userData = json.loads(f.read())
-        
+    # Fill out the job applications' easy questions
     for item in filteredCompanyDetails:
         leverCrawler = LeverAgent(False, "./chromedriver.exe")
         print("Applying to " + item[3] + "...")

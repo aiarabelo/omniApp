@@ -4,7 +4,7 @@ import re
 import requests
 import json
 from jobPost import JobPost
-from createCompaniesTable import Company
+from companiesdb import Company
 
 atsURLs = ['boards.greenhouse.io', 'jobs.lever.co']
 
@@ -33,21 +33,17 @@ class WebScraper:
             companyURLs.append(companyURL)
 
         for url in companyURLs:
-            regex = r"(?:https?:\/\/www\." + baseURL + r"\/)([^/\n?\$]+)"
+            regex = r"(?:https?:\/\/(?:www\.)?" + baseURL + r"\/)([^/\n?\$]+)"
             r = re.search(regex, url)
             if r is not None:
                 print("FILTERED! " + r.group(1))
                 filteredURLs.add(r.group(1))
-            try:
-                Company.insertInfo(r.group(1), baseURL, url)
-            except:
-                print("Error adding details to database for: " + url)
-                pass
-
-        companies = list(filteredURLs)
-        with open(baseURL + ".txt", "w+") as f:
-            for company in companies:
-                f.write(company + "\n")
+                try: 
+                    Company().insertInfo(r.group(1), baseURL, r.group(0))
+                except:
+                    print("Error adding details to database for: " + url)
+                    print(r.group(1) + " is a possible duplicate.")
+                    pass
         
     ''' 
     TODO: This is currently hardcoded for lever only, fix that
