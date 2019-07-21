@@ -33,12 +33,16 @@ class WebScraper:
             companyURLs.append(companyURL)
 
         for url in companyURLs:
-            regex = r"(?:https:\/\/" + baseURL + r"\/)([^/]+\/?$)"
+            regex = r"(?:https?:\/\/www\." + baseURL + r"\/)([^/\n?\$]+)"
             r = re.search(regex, url)
             if r is not None:
                 print("FILTERED! " + r.group(1))
                 filteredURLs.add(r.group(1))
-            Company.insertInfo(r.group(1), baseURL, url)
+            try:
+                Company.insertInfo(r.group(1), baseURL, url)
+            except:
+                print("Error adding details to database for: " + url)
+                pass
 
         companies = list(filteredURLs)
         with open(baseURL + ".txt", "w+") as f:
