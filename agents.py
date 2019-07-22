@@ -215,8 +215,7 @@ class LeverAgent(Agent):
 if __name__ == "__main__":
     with open("env.json", "r") as g:
         credentials = json.loads(g.read())
-    userFile = "userdata.json"
-    with open(userFile, "r") as f:
+    with open("userdata.json", "r") as f:
         userData = json.loads(f.read())
     leverCrawler = LeverAgent(False, credentials["CHROME_EXECUTABLE_PATH"])
     leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict("file:///C:/Users/aiarabelo/Desktop/Projects/Github/omniApp/testpage2.html"), userData)

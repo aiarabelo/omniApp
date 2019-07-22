@@ -2,7 +2,7 @@ import os
 from googleScrape import WebScraper
 from agents import Agent, LeverAgent
 import time
-from companiesdb import Company
+from companiesdb import Company, CompanyJobs
 import psycopg2
 import json
 import pdb
@@ -26,9 +26,10 @@ if __name__ == "__main__":
     # TODO: Generalize this for all ATS
     for companyName in leverCompanyNames:
         print("Extracting job postings from " + companyName + "...")
-        jobPostList = WebScraper().getJobPosts(companyName) # This is for Lever only
+        jobPostList = WebScraper().listJobPosts(companyName) # This is for Lever only
         try:
             companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
+            WebScraper().scrapeJobPosts(companyName)
         except: 
             print("Error for extracting details from " + companyName)
             pass
@@ -45,13 +46,11 @@ if __name__ == "__main__":
     # TODO: Use a database instead 
     with open("userdata.json", "r") as f:
         userData = json.loads(f.read())
-    with open("env.json", "r") as g:
-        credentials = json.loads(g.read())
 
     # Fill out the job applications' easy questions
     # TODO: Clear textbox before sending keys
     for item in filteredCompanyDetails:
-        leverCrawler = LeverAgent(False, credentials["CHROME_EXECUTABLE_PATH"])
+        leverCrawler = LeverAgent(False, "./chromedriver.exe")
         print("Applying to " + item[3] + "...")
         try:
             leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item[2]), userData)

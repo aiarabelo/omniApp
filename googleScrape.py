@@ -4,7 +4,7 @@ import re
 import requests
 import json
 from jobPost import JobPost
-from companiesdb import Company
+from companiesdb import Company, CompanyJobs
 
 
 atsURLs = ['boards.greenhouse.io', 'jobs.lever.co']
@@ -53,13 +53,23 @@ class WebScraper:
     FUNCTION: Gets the job posts for each company
     companyName: name of the company
     JobPost: a class in jobPost.py that retrieves job post attributes
-    returns a list of job posts with relevant information
+    returns a list of webelements of job posts with relevant information
     """
-    def getJobPosts(self, companyName):
+    def listJobPosts(self, companyName):
         r = requests.get("https://api.lever.co/v0/postings/" + companyName)
         j = json.loads(r.text)
         return [JobPost(d) for d in j]
-    
+
+    """
+    FUNCTION: Scrapes the job postings for each company and puts them in a database called job_listings
+    companyName: name of the company
+    """    
+    def scrapeJobPosts(self, companyName):
+        jobPostList = self.listJobPosts(companyName)
+        for item in jobPostList:
+            CompanyJobs().insertJobListings(companyName, item.commitment, item.department, item.location, item.team, item.title, item.applyUrl)
+        print("Completed database input for job listings from " + companyName)
+        
     """
     FUNCTION: Filters job postings for a company based on the desired commitment and position
     commitment: desired commitment (Intern, full-time, etc.)
