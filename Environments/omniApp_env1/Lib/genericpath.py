@@ -6,9 +6,19 @@ functions from this module themselves.
 import os
 import stat
 
-__all__ = ['commonprefix', 'exists', 'getatime', 'getctime', 'getmtime',
-           'getsize', 'isdir', 'isfile', 'samefile', 'sameopenfile',
-           'samestat']
+__all__ = [
+    "commonprefix",
+    "exists",
+    "getatime",
+    "getctime",
+    "getmtime",
+    "getsize",
+    "isdir",
+    "isfile",
+    "samefile",
+    "sameopenfile",
+    "samestat",
+]
 
 
 # Does a path exist?
@@ -68,7 +78,8 @@ def getctime(filename):
 # Return the longest prefix of all list elements.
 def commonprefix(m):
     "Given a list of pathnames, returns the longest common leading component"
-    if not m: return ''
+    if not m:
+        return ""
     # Some people pass in a list of pathname parts to operate in an OS-agnostic
     # fashion; don't try to translate in that case as that's an abuse of the
     # API and they are already doing what they need to be OS-agnostic and so
@@ -82,12 +93,12 @@ def commonprefix(m):
             return s1[:i]
     return s1
 
+
 # Are two stat buffers (obtained from stat, fstat or lstat)
 # describing the same file?
 def samestat(s1, s2):
     """Test whether two stat buffers reference the same file"""
-    return (s1.st_ino == s2.st_ino and
-            s1.st_dev == s2.st_dev)
+    return s1.st_ino == s2.st_ino and s1.st_dev == s2.st_dev
 
 
 # Are two filenames really pointing to the same file?
@@ -131,11 +142,12 @@ def _splitext(p, sep, altsep, extsep):
         # skip all leading dots
         filenameIndex = sepIndex + 1
         while filenameIndex < dotIndex:
-            if p[filenameIndex:filenameIndex+1] != extsep:
+            if p[filenameIndex : filenameIndex + 1] != extsep:
                 return p[:dotIndex], p[dotIndex:]
             filenameIndex += 1
 
     return p, p[:0]
+
 
 def _check_arg_types(funcname, *args):
     hasstr = hasbytes = False
@@ -145,7 +157,9 @@ def _check_arg_types(funcname, *args):
         elif isinstance(s, bytes):
             hasbytes = True
         else:
-            raise TypeError('%s() argument must be str or bytes, not %r' %
-                            (funcname, s.__class__.__name__)) from None
+            raise TypeError(
+                "%s() argument must be str or bytes, not %r"
+                % (funcname, s.__class__.__name__)
+            ) from None
     if hasstr and hasbytes:
         raise TypeError("Can't mix strings and bytes in path components") from None

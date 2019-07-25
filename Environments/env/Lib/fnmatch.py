@@ -16,6 +16,7 @@ import functools
 
 __all__ = ["filter", "fnmatch", "fnmatchcase", "translate"]
 
+
 def fnmatch(name, pat):
     """Test whether FILENAME matches PATTERN.
 
@@ -35,15 +36,17 @@ def fnmatch(name, pat):
     pat = os.path.normcase(pat)
     return fnmatchcase(name, pat)
 
+
 @functools.lru_cache(maxsize=256, typed=True)
 def _compile_pattern(pat):
     if isinstance(pat, bytes):
-        pat_str = str(pat, 'ISO-8859-1')
+        pat_str = str(pat, "ISO-8859-1")
         res_str = translate(pat_str)
-        res = bytes(res_str, 'ISO-8859-1')
+        res = bytes(res_str, "ISO-8859-1")
     else:
         res = translate(pat)
     return re.compile(res).match
+
 
 def filter(names, pat):
     """Return the subset of the list NAMES that match PAT."""
@@ -60,6 +63,7 @@ def filter(names, pat):
             if match(os.path.normcase(name)):
                 result.append(name)
     return result
+
 
 def fnmatchcase(name, pat):
     """Test whether FILENAME matches PATTERN, including case.
@@ -78,51 +82,52 @@ def translate(pat):
     """
 
     i, n = 0, len(pat)
-    res = ''
+    res = ""
     while i < n:
         c = pat[i]
-        i = i+1
-        if c == '*':
-            res = res + '.*'
-        elif c == '?':
-            res = res + '.'
-        elif c == '[':
+        i = i + 1
+        if c == "*":
+            res = res + ".*"
+        elif c == "?":
+            res = res + "."
+        elif c == "[":
             j = i
-            if j < n and pat[j] == '!':
-                j = j+1
-            if j < n and pat[j] == ']':
-                j = j+1
-            while j < n and pat[j] != ']':
-                j = j+1
+            if j < n and pat[j] == "!":
+                j = j + 1
+            if j < n and pat[j] == "]":
+                j = j + 1
+            while j < n and pat[j] != "]":
+                j = j + 1
             if j >= n:
-                res = res + '\\['
+                res = res + "\\["
             else:
                 stuff = pat[i:j]
-                if '--' not in stuff:
-                    stuff = stuff.replace('\\', r'\\')
+                if "--" not in stuff:
+                    stuff = stuff.replace("\\", r"\\")
                 else:
                     chunks = []
-                    k = i+2 if pat[i] == '!' else i+1
+                    k = i + 2 if pat[i] == "!" else i + 1
                     while True:
-                        k = pat.find('-', k, j)
+                        k = pat.find("-", k, j)
                         if k < 0:
                             break
                         chunks.append(pat[i:k])
-                        i = k+1
-                        k = k+3
+                        i = k + 1
+                        k = k + 3
                     chunks.append(pat[i:j])
                     # Escape backslashes and hyphens for set difference (--).
                     # Hyphens that create ranges shouldn't be escaped.
-                    stuff = '-'.join(s.replace('\\', r'\\').replace('-', r'\-')
-                                     for s in chunks)
+                    stuff = "-".join(
+                        s.replace("\\", r"\\").replace("-", r"\-") for s in chunks
+                    )
                 # Escape set operations (&&, ~~ and ||).
-                stuff = re.sub(r'([&~|])', r'\\\1', stuff)
-                i = j+1
-                if stuff[0] == '!':
-                    stuff = '^' + stuff[1:]
-                elif stuff[0] in ('^', '['):
-                    stuff = '\\' + stuff
-                res = '%s[%s]' % (res, stuff)
+                stuff = re.sub(r"([&~|])", r"\\\1", stuff)
+                i = j + 1
+                if stuff[0] == "!":
+                    stuff = "^" + stuff[1:]
+                elif stuff[0] in ("^", "["):
+                    stuff = "\\" + stuff
+                res = "%s[%s]" % (res, stuff)
         else:
             res = res + re.escape(c)
-    return r'(?s:%s)\Z' % res
+    return r"(?s:%s)\Z" % res

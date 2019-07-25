@@ -8,23 +8,23 @@ from importlib.abc import ResourceLoader
 from io import BytesIO, TextIOWrapper
 from pathlib import Path
 from types import ModuleType
-from typing import Iterable, Iterator, Optional, Set, Union   # noqa: F401
+from typing import Iterable, Iterator, Optional, Set, Union  # noqa: F401
 from typing import cast
 from typing.io import BinaryIO, TextIO
 from zipimport import ZipImportError
 
 
 __all__ = [
-    'Package',
-    'Resource',
-    'contents',
-    'is_resource',
-    'open_binary',
-    'open_text',
-    'path',
-    'read_binary',
-    'read_text',
-    ]
+    "Package",
+    "Resource",
+    "contents",
+    "is_resource",
+    "open_binary",
+    "open_text",
+    "path",
+    "read_binary",
+    "read_text",
+]
 
 
 Package = Union[str, ModuleType]
@@ -37,16 +37,15 @@ def _get_package(package) -> ModuleType:
     If a name, the module is imported.  If the passed or imported module
     object is not a package, raise an exception.
     """
-    if hasattr(package, '__spec__'):
+    if hasattr(package, "__spec__"):
         if package.__spec__.submodule_search_locations is None:
-            raise TypeError('{!r} is not a package'.format(
-                package.__spec__.name))
+            raise TypeError("{!r} is not a package".format(package.__spec__.name))
         else:
             return package
     else:
         module = import_module(package)
         if module.__spec__.submodule_search_locations is None:
-            raise TypeError('{!r} is not a package'.format(package))
+            raise TypeError("{!r} is not a package".format(package))
         else:
             return module
 
@@ -58,28 +57,28 @@ def _normalize_path(path) -> str:
     """
     parent, file_name = os.path.split(path)
     if parent:
-        raise ValueError('{!r} must be only a file name'.format(path))
+        raise ValueError("{!r} must be only a file name".format(path))
     else:
         return file_name
 
 
-def _get_resource_reader(
-        package: ModuleType) -> Optional[resources_abc.ResourceReader]:
+def _get_resource_reader(package: ModuleType) -> Optional[resources_abc.ResourceReader]:
     # Return the package's loader if it's a ResourceReader.  We can't use
     # a issubclass() check here because apparently abc.'s __subclasscheck__()
     # hook wants to create a weak reference to the object, but
     # zipimport.zipimporter does not support weak references, resulting in a
     # TypeError.  That seems terrible.
     spec = package.__spec__
-    if hasattr(spec.loader, 'get_resource_reader'):
-        return cast(resources_abc.ResourceReader,
-                    spec.loader.get_resource_reader(spec.name))
+    if hasattr(spec.loader, "get_resource_reader"):
+        return cast(
+            resources_abc.ResourceReader, spec.loader.get_resource_reader(spec.name)
+        )
     return None
 
 
 def _check_location(package):
     if package.__spec__.origin is None or not package.__spec__.has_location:
-        raise FileNotFoundError(f'Package has no location {package!r}')
+        raise FileNotFoundError(f"Package has no location {package!r}")
 
 
 def open_binary(package: Package, resource: Resource) -> BinaryIO:
@@ -94,29 +93,30 @@ def open_binary(package: Package, resource: Resource) -> BinaryIO:
     package_path = os.path.dirname(absolute_package_path)
     full_path = os.path.join(package_path, resource)
     try:
-        return open(full_path, mode='rb')
+        return open(full_path, mode="rb")
     except OSError:
         # Just assume the loader is a resource loader; all the relevant
         # importlib.machinery loaders are and an AttributeError for
         # get_data() will make it clear what is needed from the loader.
         loader = cast(ResourceLoader, package.__spec__.loader)
         data = None
-        if hasattr(package.__spec__.loader, 'get_data'):
+        if hasattr(package.__spec__.loader, "get_data"):
             with suppress(OSError):
                 data = loader.get_data(full_path)
         if data is None:
             package_name = package.__spec__.name
-            message = '{!r} resource not found in {!r}'.format(
-                resource, package_name)
+            message = "{!r} resource not found in {!r}".format(resource, package_name)
             raise FileNotFoundError(message)
         else:
             return BytesIO(data)
 
 
-def open_text(package: Package,
-              resource: Resource,
-              encoding: str = 'utf-8',
-              errors: str = 'strict') -> TextIO:
+def open_text(
+    package: Package,
+    resource: Resource,
+    encoding: str = "utf-8",
+    errors: str = "strict",
+) -> TextIO:
     """Return a file-like object opened for text reading of the resource."""
     resource = _normalize_path(resource)
     package = _get_package(package)
@@ -128,20 +128,19 @@ def open_text(package: Package,
     package_path = os.path.dirname(absolute_package_path)
     full_path = os.path.join(package_path, resource)
     try:
-        return open(full_path, mode='r', encoding=encoding, errors=errors)
+        return open(full_path, mode="r", encoding=encoding, errors=errors)
     except OSError:
         # Just assume the loader is a resource loader; all the relevant
         # importlib.machinery loaders are and an AttributeError for
         # get_data() will make it clear what is needed from the loader.
         loader = cast(ResourceLoader, package.__spec__.loader)
         data = None
-        if hasattr(package.__spec__.loader, 'get_data'):
+        if hasattr(package.__spec__.loader, "get_data"):
             with suppress(OSError):
                 data = loader.get_data(full_path)
         if data is None:
             package_name = package.__spec__.name
-            message = '{!r} resource not found in {!r}'.format(
-                resource, package_name)
+            message = "{!r} resource not found in {!r}".format(resource, package_name)
             raise FileNotFoundError(message)
         else:
             return TextIOWrapper(BytesIO(data), encoding, errors)
@@ -155,10 +154,12 @@ def read_binary(package: Package, resource: Resource) -> bytes:
         return fp.read()
 
 
-def read_text(package: Package,
-              resource: Resource,
-              encoding: str = 'utf-8',
-              errors: str = 'strict') -> str:
+def read_text(
+    package: Package,
+    resource: Resource,
+    encoding: str = "utf-8",
+    errors: str = "strict",
+) -> str:
     """Return the decoded string of the resource.
 
     The decoding-related arguments have the same semantics as those of
@@ -265,6 +266,7 @@ def contents(package: Package) -> Iterable[str]:
 # itself at some point, so doing this all in C would difficult and a waste of
 # effort.
 
+
 class _ZipImportResourceReader(resources_abc.ResourceReader):
     """Private class used to support ZipImport.get_resource_reader().
 
@@ -277,8 +279,8 @@ class _ZipImportResourceReader(resources_abc.ResourceReader):
         self.fullname = fullname
 
     def open_resource(self, resource):
-        fullname_as_path = self.fullname.replace('.', '/')
-        path = f'{fullname_as_path}/{resource}'
+        fullname_as_path = self.fullname.replace(".", "/")
+        path = f"{fullname_as_path}/{resource}"
         try:
             return BytesIO(self.zipimporter.get_data(path))
         except OSError:
@@ -293,8 +295,8 @@ class _ZipImportResourceReader(resources_abc.ResourceReader):
     def is_resource(self, name):
         # Maybe we could do better, but if we can get the data, it's a
         # resource.  Otherwise it isn't.
-        fullname_as_path = self.fullname.replace('.', '/')
-        path = f'{fullname_as_path}/{name}'
+        fullname_as_path = self.fullname.replace(".", "/")
+        path = f"{fullname_as_path}/{name}"
         try:
             self.zipimporter.get_data(path)
         except OSError:
@@ -313,7 +315,7 @@ class _ZipImportResourceReader(resources_abc.ResourceReader):
         relative_path = fullname_path.relative_to(self.zipimporter.archive)
         # Don't forget that fullname names a package, so its path will include
         # __init__.py, which we want to ignore.
-        assert relative_path.name == '__init__.py'
+        assert relative_path.name == "__init__.py"
         package_path = relative_path.parent
         subdirs_seen = set()
         for filename in self.zipimporter._files:

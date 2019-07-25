@@ -12,4 +12,4 @@ contents[question] = answer
 print(contents)
 
 with open(filename, "w+") as f:
-    f.write(json.dumps(contents))
+    f.write(json.dumps(contents))asd

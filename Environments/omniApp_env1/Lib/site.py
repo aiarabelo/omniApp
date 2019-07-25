@@ -222,20 +222,30 @@ def addsitepackages(known_paths, sys_prefix=sys.prefix, exec_prefix=sys.exec_pre
                 if prefix.startswith("/System/Library/Frameworks/"):  # Apple's Python
 
                     sitedirs = [
-                        os.path.join("/Library/Python", sys.version[:3], "site-packages"),
+                        os.path.join(
+                            "/Library/Python", sys.version[:3], "site-packages"
+                        ),
                         os.path.join(prefix, "Extras", "lib", "python"),
                     ]
 
                 else:  # any other Python distros on OSX work this way
-                    sitedirs = [os.path.join(prefix, "lib", "python" + sys.version[:3], "site-packages")]
+                    sitedirs = [
+                        os.path.join(
+                            prefix, "lib", "python" + sys.version[:3], "site-packages"
+                        )
+                    ]
 
             elif os.sep == "/":
                 sitedirs = [
-                    os.path.join(prefix, "lib", "python" + sys.version[:3], "site-packages"),
+                    os.path.join(
+                        prefix, "lib", "python" + sys.version[:3], "site-packages"
+                    ),
                     os.path.join(prefix, "lib", "site-python"),
                     os.path.join(prefix, "python" + sys.version[:3], "lib-dynload"),
                 ]
-                lib64_dir = os.path.join(prefix, "lib64", "python" + sys.version[:3], "site-packages")
+                lib64_dir = os.path.join(
+                    prefix, "lib64", "python" + sys.version[:3], "site-packages"
+                )
                 if os.path.exists(lib64_dir) and os.path.realpath(lib64_dir) not in [
                     os.path.realpath(p) for p in sitedirs
                 ]:
@@ -250,11 +260,23 @@ def addsitepackages(known_paths, sys_prefix=sys.prefix, exec_prefix=sys.exec_pre
                 except AttributeError:
                     pass
                 # Debian-specific dist-packages directories:
-                sitedirs.append(os.path.join(prefix, "local/lib", "python" + sys.version[:3], "dist-packages"))
+                sitedirs.append(
+                    os.path.join(
+                        prefix, "local/lib", "python" + sys.version[:3], "dist-packages"
+                    )
+                )
                 if sys.version[0] == "2":
-                    sitedirs.append(os.path.join(prefix, "lib", "python" + sys.version[:3], "dist-packages"))
+                    sitedirs.append(
+                        os.path.join(
+                            prefix, "lib", "python" + sys.version[:3], "dist-packages"
+                        )
+                    )
                 else:
-                    sitedirs.append(os.path.join(prefix, "lib", "python" + sys.version[0], "dist-packages"))
+                    sitedirs.append(
+                        os.path.join(
+                            prefix, "lib", "python" + sys.version[0], "dist-packages"
+                        )
+                    )
                 sitedirs.append(os.path.join(prefix, "lib", "dist-python"))
             else:
                 sitedirs = [prefix, os.path.join(prefix, "lib", "site-packages")]
@@ -265,7 +287,15 @@ def addsitepackages(known_paths, sys_prefix=sys.prefix, exec_prefix=sys.exec_pre
                 if "Python.framework" in prefix:
                     home = os.environ.get("HOME")
                     if home:
-                        sitedirs.append(os.path.join(home, "Library", "Python", sys.version[:3], "site-packages"))
+                        sitedirs.append(
+                            os.path.join(
+                                home,
+                                "Library",
+                                "Python",
+                                sys.version[:3],
+                                "site-packages",
+                            )
+                        )
             for sitedir in sitedirs:
                 if os.path.isdir(sitedir):
                     addsitedir(sitedir, known_paths)
@@ -325,19 +355,25 @@ def addusersitepackages(known_paths):
             USER_BASE = env_base
         else:
             USER_BASE = joinuser(base, "Python")
-        USER_SITE = os.path.join(USER_BASE, "Python" + sys.version[0] + sys.version[2], "site-packages")
+        USER_SITE = os.path.join(
+            USER_BASE, "Python" + sys.version[0] + sys.version[2], "site-packages"
+        )
     else:
         if env_base:
             USER_BASE = env_base
         else:
             USER_BASE = joinuser("~", ".local")
-        USER_SITE = os.path.join(USER_BASE, "lib", "python" + sys.version[:3], "site-packages")
+        USER_SITE = os.path.join(
+            USER_BASE, "lib", "python" + sys.version[:3], "site-packages"
+        )
 
     if ENABLE_USER_SITE and os.path.isdir(USER_SITE):
         addsitedir(USER_SITE, known_paths)
     if ENABLE_USER_SITE:
         for dist_libdir in ("lib", "local/lib"):
-            user_site = os.path.join(USER_BASE, dist_libdir, "python" + sys.version[:3], "dist-packages")
+            user_site = os.path.join(
+                USER_BASE, dist_libdir, "python" + sys.version[:3], "dist-packages"
+            )
             if os.path.isdir(user_site):
                 addsitedir(user_site, known_paths)
     return known_paths
@@ -461,7 +497,9 @@ def setcopyright():
     """Set 'copyright' and 'credits' in __builtin__"""
     builtins.copyright = _Printer("copyright", sys.copyright)
     if _is_pypy:
-        builtins.credits = _Printer("credits", "PyPy is maintained by the PyPy developers: http://pypy.org/")
+        builtins.credits = _Printer(
+            "credits", "PyPy is maintained by the PyPy developers: http://pypy.org/"
+        )
     else:
         builtins.credits = _Printer(
             "credits",
@@ -485,7 +523,10 @@ class _Helper(object):
     """
 
     def __repr__(self):
-        return "Type help() for interactive help, " "or help(object) for help about object."
+        return (
+            "Type help() for interactive help, "
+            "or help(object) for help about object."
+        )
 
     def __call__(self, *args, **kwds):
         import pydoc
@@ -559,9 +600,14 @@ def virtual_install_main_packages():
             cpyver = "%d.%d" % sys.version_info[:2]
         else:
             cpyver = "%d.%d.%d" % sys.version_info[:3]
-        paths = [os.path.join(sys.real_prefix, "lib_pypy"), os.path.join(sys.real_prefix, "lib-python", cpyver)]
+        paths = [
+            os.path.join(sys.real_prefix, "lib_pypy"),
+            os.path.join(sys.real_prefix, "lib-python", cpyver),
+        ]
         if sys.pypy_version_info < (1, 9):
-            paths.insert(1, os.path.join(sys.real_prefix, "lib-python", "modified-%s" % cpyver))
+            paths.insert(
+                1, os.path.join(sys.real_prefix, "lib-python", "modified-%s" % cpyver)
+            )
         hardcoded_relative_dirs = paths[:]  # for the special 'darwin' case below
         #
         # This is hardcoded in the Python executable, but relative to sys.prefix:
@@ -570,7 +616,10 @@ def virtual_install_main_packages():
             if os.path.exists(plat_path):
                 paths.append(plat_path)
     elif sys.platform == "win32":
-        paths = [os.path.join(sys.real_prefix, "Lib"), os.path.join(sys.real_prefix, "DLLs")]
+        paths = [
+            os.path.join(sys.real_prefix, "Lib"),
+            os.path.join(sys.real_prefix, "DLLs"),
+        ]
     else:
         paths = [os.path.join(sys.real_prefix, "lib", "python" + sys.version[:3])]
         hardcoded_relative_dirs = paths[:]  # for the special 'darwin' case below
@@ -590,7 +639,9 @@ def virtual_install_main_packages():
         except AttributeError:
             # This is a non-multiarch aware Python.  Fallback to the old way.
             arch = sys.platform
-        plat_path = os.path.join(sys.real_prefix, "lib", "python" + sys.version[:3], "plat-%s" % arch)
+        plat_path = os.path.join(
+            sys.real_prefix, "lib", "python" + sys.version[:3], "plat-%s" % arch
+        )
         if os.path.exists(plat_path):
             paths.append(plat_path)
     # This is hardcoded in the Python executable, but
@@ -730,7 +781,9 @@ def main():
     paths_in_sys = removeduppaths()
     if os.name == "posix" and sys.path and os.path.basename(sys.path[-1]) == "Modules":
         addbuilddir()
-    GLOBAL_SITE_PACKAGES = not os.path.exists(os.path.join(os.path.dirname(__file__), "no-global-site-packages.txt"))
+    GLOBAL_SITE_PACKAGES = not os.path.exists(
+        os.path.join(os.path.dirname(__file__), "no-global-site-packages.txt")
+    )
     if not GLOBAL_SITE_PACKAGES:
         ENABLE_USER_SITE = False
     if ENABLE_USER_SITE is None:

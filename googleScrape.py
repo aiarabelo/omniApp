@@ -4,10 +4,11 @@ import re
 import requests
 import json
 from jobPost import JobPost
-from companiesdb import Company, CompanyJobs
+from companyInfoDB import Company, CompanyJobs
+from createEngine import createSession
 
 
-atsURLs = ['boards.greenhouse.io', 'jobs.lever.co']
+atsURLs = ["boards.greenhouse.io", "jobs.lever.co"]
 
 class WebScraper:
     def companyInfo(self, baseURL):
@@ -26,12 +27,14 @@ class WebScraper:
         companyURLs = []
         filteredURLs = set()
 
-        for companyURL in search('site:' + baseURL, stop = 25000):
+        for companyURL in search("site:" + baseURL, stop=25000):
             print(companyURL)
-            i+=1
+            i += 1
             if i % 10 == 0:
                 time.sleep(60)
             companyURLs.append(companyURL)
+
+        session = createSession()
 
         for url in companyURLs:
             regex = r"(?:https?:\/\/(?:www\.)?" + baseURL + r"\/)([^/\n?\$]+)"
@@ -39,22 +42,27 @@ class WebScraper:
             if r is not None:
                 print("FILTERED! " + r.group(1))
                 filteredURLs.add(r.group(1))
-                try: 
-                    Company().insertInfo(r.group(1), baseURL, r.group(0))
+                try:
+                    company = Company(company_name=r.group(1), ats=baseURL, url=r.group(0)).insert(session)
+                    # Company().insertInfo(r.group(1), baseURL, r.group(0))
                 except:
                     print("Error adding details to database for: " + url)
                     print(r.group(1) + " is a possible duplicate.")
                     pass
-        
-    ''' 
+            
+        session.close()
+
+
+    """ 
     TODO: This is currently hardcoded for lever only, fix that
-    '''
+    """
     """
     FUNCTION: Gets the job posts for each company
     companyName: name of the company
     JobPost: a class in jobPost.py that retrieves job post attributes
     returns a list of webelements of job posts with relevant information
     """
+
     def listJobPosts(self, companyName):
         r = requests.get("https://api.lever.co/v0/postings/" + companyName)
         j = json.loads(r.text)
@@ -63,13 +71,16 @@ class WebScraper:
     """
     FUNCTION: Scrapes the job postings for each company and puts them in a database called job_listings
     companyName: name of the company
-    """    
+    """
+
     def scrapeJobPosts(self, companyName):
+        session = createSession()
         jobPostList = self.listJobPosts(companyName)
         for item in jobPostList:
-            CompanyJobs().insertJobListings(companyName, item.commitment, item.department, item.location, item.team, item.title, item.applyUrl)
+            CompanyJobs(company_name=companyName, commitment=item.commitment, department=item.department, location=item.location, team=item.team, title=item.title, apply_url=item.applyUrl).insert(session)
         print("Completed database input for job listings from " + companyName)
-        
+        session.close()
+
     """
     FUNCTION: Filters job postings for a company based on the desired commitment and position
     commitment: desired commitment (Intern, full-time, etc.)
@@ -81,8 +92,14 @@ class WebScraper:
     # TODO: This filters for commitment and position only.
     #       For final product, filter for others
     def filterCompany(self, commitment, position, companyName, companyDetails):
-        filteredCompany = list(filter(lambda x : commitment in x[0] and position in x[1], companyDetails[companyName]))
+        filteredCompany = list(
+            filter(
+                lambda x: commitment in x[0] and position in x[1],
+                companyDetails[companyName],
+            )
+        )
         return filteredCompany
+
 
 if __name__ == "__main__":
     for atsURL in atsURLs:
