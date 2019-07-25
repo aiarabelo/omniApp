@@ -4,7 +4,7 @@ import re
 import requests
 import json
 from jobPost import JobPost
-from companyInfoDB import Company, CompanyJobs
+from models import Company, CompanyJobs
 from createEngine import createSession
 
 
