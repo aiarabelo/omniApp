@@ -29,14 +29,13 @@ if __name__ == "__main__":
     position = "Software Engineer"
 
     # TODO: Generalize this for all ATS
+    session = createSession()
     for companyName in leverCompanyNames:
         print("Extracting job postings from " + companyName + "...")
         jobPostList = WebScraper().listJobPosts(companyName)  # This is for Lever only
         try:
-            companyDetails[companyName] = [
-                [item.commitment, item.title, item.applyUrl, companyName]
-                for item in jobPostList
-            ]
+            companyDetails[companyName] = 
+            [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
             WebScraper().scrapeJobPosts(companyName)
         except:
             print("Error for extracting details from " + companyName)
@@ -48,6 +47,7 @@ if __name__ == "__main__":
                 commitment, position, companyName, companyDetails
             )
         )
+    session.close()
 
     # Filters out what we want for the job commitment and title from the dictionary "companyDetails"
     print("Filtered! Here is what's left:")

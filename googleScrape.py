@@ -44,7 +44,6 @@ class WebScraper:
                 filteredURLs.add(r.group(1))
                 try:
                     company = Company(company_name=r.group(1), ats=baseURL, url=r.group(0)).insert(session)
-                    # Company().insertInfo(r.group(1), baseURL, r.group(0))
                 except:
                     print("Error adding details to database for: " + url)
                     print(r.group(1) + " is a possible duplicate.")
@@ -74,12 +73,10 @@ class WebScraper:
     """
 
     def scrapeJobPosts(self, companyName):
-        session = createSession()
         jobPostList = self.listJobPosts(companyName)
         for item in jobPostList:
             CompanyJobs(company_name=companyName, commitment=item.commitment, department=item.department, location=item.location, team=item.team, title=item.title, apply_url=item.applyUrl).insert(session)
         print("Completed database input for job listings from " + companyName)
-        session.close()
 
     """
     FUNCTION: Filters job postings for a company based on the desired commitment and position

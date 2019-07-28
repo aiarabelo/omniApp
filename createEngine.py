@@ -9,7 +9,6 @@ import json
 with open("env.json", "r") as f:
   credentials = json.loads(f.read())
 
-
 def createEngine():
   engine = create_engine("postgresql://"+credentials["DATABASE_USER"]+":"+credentials["DATABASE_PASSWORD"]+"@"+credentials["DATABASE_HOST"]+"/"+credentials["DATABASE_NAME"], echo=True)
   return engine

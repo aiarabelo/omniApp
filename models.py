@@ -2,8 +2,8 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from createEngine import createSession
 
-Base = declarative_base()
 
+Base = declarative_base()
 
 class Company(Base):
   __tablename__ = "companies"
@@ -39,8 +39,18 @@ class CompanyJobs(Base):
     session.add(self)
     session.commit()
     return self 
+  
+  def filterJobListings(self, session, commitment, title):
+    x = session.query(CompanyJobs.apply_url).filter(CompanyJobs.commitment.like('%Intern%'), CompanyJobs.title.like('%Software%')).all()
+    print(x)
+    return [y[0] for y in x]
 
 session = createSession()
+p = CompanyJobs().filterJobListings(session, commitment="Full time", title="Recruiter")
+print(p)
+session.close()
+
+# session = createSession()
 # x = Company(company_name="asd", ats="asd", url="asd").insert(session)
 # x = CompanyJobs(company_name="asd", commitment="asd", department="asd", location="asd", team="asd", title="asd", apply_url="asd").insert(session)
 
