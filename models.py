@@ -41,7 +41,7 @@ class CompanyJobs(Base):
     return self 
   
   def filterJobListings(self, session, commitment, title):
-    x = session.query(CompanyJobs.apply_url).filter(CompanyJobs.commitment.like('%Intern%'), CompanyJobs.title.like('%Software%')).all()
+    x = session.query(CompanyJobs.apply_url, CompanyJobs.title).filter(CompanyJobs.commitment.like("%{}%".format(commitment)), CompanyJobs.title.like("%{}%".format(title))).all()
     print(x)
     return [y[0] for y in x]
 
