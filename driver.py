@@ -2,8 +2,6 @@ import os
 from googleScrape import WebScraper
 from agents import Agent, LeverAgent
 import time
-
-# from companiesdb import Company, CompanyJobs
 from models import Company
 from createEngine import createSession
 import psycopg2
@@ -11,22 +9,28 @@ import json
 import pdb
 
 
+atsURLs = ["boards.greenhouse.io", "jobs.lever.co"]
+
 if __name__ == "__main__":
     # companyDetails: dictionary, with the company name as key and its value being a list of job postings for that company
     # Lists details of the job posting: commitment, title, and applyUrl
     companyDetails = {}
     filteredCompanyDetails = []
-
+    
+    # Getting company names that use the ATS
+    for atsURL in atsURLs:
+        WebScraper().getCompanyInfo(atsURL)
+        
     # Hardcoded: Getting company names off the ATS
     session = createSession()
     leverCompanyNames = Company.getCompanyNames(session, "jobs.lever.co")
-
+    session.close()
     # Uncomment this to not hardcode:
     # commitment = input("Desired commitment: ")
     # position = input("Desired position: ")
     # Hardcoded:
     commitment = "Intern"
-    position = "Software Engineer"
+    title = "Software"
 
     # TODO: Generalize this for all ATS
     session = createSession()
@@ -34,21 +38,17 @@ if __name__ == "__main__":
         print("Extracting job postings from " + companyName + "...")
         jobPostList = WebScraper().listJobPosts(companyName)  # This is for Lever only
         try:
-            companyDetails[companyName] = 
-            [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
+            companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
             WebScraper().scrapeJobPosts(companyName)
         except:
             print("Error for extracting details from " + companyName)
             pass
         print(companyDetails[companyName])
         print("Extraction complete for " + companyName + "!")
-        filteredCompanyDetails.extend(
-            WebScraper().filterCompany(
-                commitment, position, companyName, companyDetails
-            )
-        )
     session.close()
-
+    
+    filteredCompanyDetails.extend(WebScraper().filterCompany(session, commitment, title))
+    
     # Filters out what we want for the job commitment and title from the dictionary "companyDetails"
     print("Filtered! Here is what's left:")
     print(filteredCompanyDetails)

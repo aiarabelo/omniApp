@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from createEngine import createSession
+from createEngine import createSession, createEngine
 
-
+engine = createEngine()
 Base = declarative_base()
 
 class Company(Base):
@@ -45,12 +45,19 @@ class CompanyJobs(Base):
     print(x)
     return [y[0] for y in x]
 
-session = createSession()
-p = CompanyJobs().filterJobListings(session, commitment="Full time", title="Recruiter")
-print(p)
-session.close()
+# session = createSession()
+# p = CompanyJobs().filterJobListings(session, commitment="Full time", title="Recruiter")
+# print(p)
+# session.close()
 
 # session = createSession()
-# x = Company(company_name="asd", ats="asd", url="asd").insert(session)
+#x   x = Company(company_name="asd", ats="asd", url="asd").insert(session)
 # x = CompanyJobs(company_name="asd", commitment="asd", department="asd", location="asd", team="asd", title="asd", apply_url="asd").insert(session)
-
+session = createSession()
+try:
+  Company.__table__.create(engine)
+  CompanyJobs.__table__.create(engine)
+  session.commit()
+except: 
+  print("Tables already created")
+session.close()

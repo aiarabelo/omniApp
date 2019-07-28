@@ -8,12 +8,11 @@ from models import Company, CompanyJobs
 from createEngine import createSession
 
 
-atsURLs = ["boards.greenhouse.io", "jobs.lever.co"]
 
 class WebScraper:
-    def companyInfo(self, baseURL):
+    def getCompanyInfo(self, baseURL):
         """
-        FUNCTION: Scrapes Google for Company URLs
+        FUNCTION: Scrapes Google for Company URLs and their names
         companyURL: each scraped item in the Google search
         companyURLs: an unfiltered list of company URLs; these may contain duplicate companies
         baseURL: the base URL of the ATS that will be scraped
@@ -43,12 +42,12 @@ class WebScraper:
                 print("FILTERED! " + r.group(1))
                 filteredURLs.add(r.group(1))
                 try:
-                    company = Company(company_name=r.group(1), ats=baseURL, url=r.group(0)).insert(session)
+                    Company(company_name=r.group(1), ats=baseURL, url=r.group(0)).insert(session)
                 except:
                     print("Error adding details to database for: " + url)
                     print(r.group(1) + " is a possible duplicate.")
                     pass
-            
+        session.commit()
         session.close()
 
 
@@ -72,10 +71,11 @@ class WebScraper:
     companyName: name of the company
     """
 
-    def scrapeJobPosts(self, companyName):
+    def scrapeJobPosts(self, session, companyName):
         jobPostList = self.listJobPosts(companyName)
         for item in jobPostList:
             CompanyJobs(company_name=companyName, commitment=item.commitment, department=item.department, location=item.location, team=item.team, title=item.title, apply_url=item.applyUrl).insert(session)
+            session.commit()
         print("Completed database input for job listings from " + companyName)
 
     """
@@ -88,16 +88,6 @@ class WebScraper:
     """
     # TODO: This filters for commitment and position only.
     #       For final product, filter for others
-    def filterCompany(self, commitment, position, companyName, companyDetails):
-        filteredCompany = list(
-            filter(
-                lambda x: commitment in x[0] and position in x[1],
-                companyDetails[companyName],
-            )
-        )
-        return filteredCompany
-
-
-if __name__ == "__main__":
-    for atsURL in atsURLs:
-        WebScraper().companyInfo(atsURL)
+    def filterCompany(self, session, commitment, title):
+        filteredCompanies = CompanyJobs().filterJobListings(session, commitment=commitment, title=title)
+        return filteredCompanies

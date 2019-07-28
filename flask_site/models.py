@@ -5,8 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy import Table, Column, String, MetaData
 from flask_login import UserMixin
 
-engine = create_engine("postgresql://postgres:l1pt0n@localhost:5432/omniApp")
 
+engine = create_engine("postgresql://postgres:l1pt0n@localhost:5432/omniApp")
 
 @login_manager.user_loader
 def load_user(user_id):
