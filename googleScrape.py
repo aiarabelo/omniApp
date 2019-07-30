@@ -39,13 +39,13 @@ class WebScraper:
             regex = r"(?:https?:\/\/(?:www\.)?" + baseURL + r"\/)([^/\n?\$]+)"
             r = re.search(regex, url)
             if r is not None:
-                print("FILTERED! " + r.group(1))
+                print("Adding to 'companies' table: " + r.group(1) + "...")
                 filteredURLs.add(r.group(1))
                 try:
                     Company(company_name=r.group(1), ats=baseURL, url=r.group(0)).insert(session)
                 except:
                     print("Error adding details to database for: " + url)
-                    print(r.group(1) + " is a possible duplicate.")
+                    print(r.group(1) + " already exists in the table.")
                     pass
         session.commit()
         session.close()

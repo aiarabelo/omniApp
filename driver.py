@@ -39,7 +39,7 @@ if __name__ == "__main__":
         jobPostList = WebScraper().listJobPosts(companyName)  # This is for Lever only
         try:
             companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
-            WebScraper().scrapeJobPosts(companyName)
+            WebScraper().scrapeJobPosts(session, companyName)
         except:
             print("Error for extracting details from " + companyName)
             pass

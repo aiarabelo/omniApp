@@ -34,7 +34,7 @@ class CompanyJobs(Base):
   __tablename__ = "job_listings"
 
   id = Column('id', Integer, primary_key=True)
-  company_name = Column('company_name', String, unique=True)
+  company_name = Column('company_name', String)
   commitment = Column('commitment', String)
   department = Column('department', String)
   location = Column('location', String)
