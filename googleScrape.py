@@ -24,7 +24,7 @@ class WebScraper:
         """
         i = 1
         companyURLs = []
-        filteredURLs = set()
+        companyNames = set()
 
         for companyURL in search("site:" + baseURL, stop=25000):
             print(companyURL)
@@ -34,19 +34,22 @@ class WebScraper:
             companyURLs.append(companyURL)
 
         session = createSession()
-
         for url in companyURLs:
             regex = r"(?:https?:\/\/(?:www\.)?" + baseURL + r"\/)([^/\n?\$]+)"
             r = re.search(regex, url)
             if r is not None:
-                print("Adding to 'companies' table: " + r.group(1) + "...")
-                filteredURLs.add(r.group(1))
-                try:
-                    Company(company_name=r.group(1), ats=baseURL, url=r.group(0)).insert(session)
-                except:
-                    print("Error adding details to database for: " + url)
-                    print(r.group(1) + " already exists in the table.")
-                    pass
+                print("Adding to 'companies' list: " + r.group(1) + "...")
+                companyNames.add(r.group(1))
+                
+        companyNames = list(companyNames)
+        for companyName in companyNames:
+            link = baseURL + companyName
+            try:
+                Company(company_name=companyName, ats=baseURL, url=link).insert(session)
+            except:
+                print("Error adding details to database for: " + url)
+                print(r.group(1) + " already exists in the table.")
+                pass
         session.commit()
         session.close()
 
