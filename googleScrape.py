@@ -43,7 +43,7 @@ class WebScraper:
                 
         companyNames = list(companyNames)
         for companyName in companyNames:
-            link = baseURL + companyName
+            link = "https://" + baseURL + "/" + companyName
             try:
                 Company(company_name=companyName, ats=baseURL, url=link).insert(session)
             except:
