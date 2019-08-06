@@ -1,6 +1,8 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from createEngine import createSession, createEngine
+from sqlalchemy_utils import database_exists, create_database
+
 
 engine = createEngine()
 Base = declarative_base()
@@ -59,14 +61,11 @@ class CompanyJobs(Base):
     print(x)
     return [y[0] for y in x]
 
-# session = createSession()
-# p = CompanyJobs().filterJobListings(session, commitment="Full time", title="Recruiter")
-# print(p)
-# session.close()
-
-# session = createSession()
-#x   x = Company(company_name="asd", ats="asd", url="asd").insert(session)
-# x = CompanyJobs(company_name="asd", commitment="asd", department="asd", location="asd", team="asd", title="asd", apply_url="asd").insert(session)
+if not database_exists(engine.url):
+  create_database(engine.url)
+  print("Creating database for omniApp...")
+else:
+  print("Database for OmniApp already exists.")
 
 """
 FUNCTION: Creates "companies" and "job_listings" tables 
@@ -78,4 +77,6 @@ try:
   session.commit()
 except: 
   print("Tables already created")
+  
 session.close()
+

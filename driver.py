@@ -21,21 +21,13 @@ if __name__ == "__main__":
     FUNCTION: Creates "companies" and "job_listings" tables 
     """
     session = createSession()
-    try:
-        Company.__table__.create(engine)
-        CompanyJobs.__table__.create(engine)
-        session.commit()
-        # Getting company names that use the ATS
-        for atsURL in atsURLs:
-            WebScraper().getCompanyInfo(atsURL)
-    except: 
-        print("Tables already created")
-    session.close()
+    for atsURL in atsURLs:
+        WebScraper().getCompanyInfo(atsURL)
+
     
     # Hardcoded: Getting company names off the ATS
-    session = createSession()
     leverCompanyNames = Company.getCompanyNames(session, "jobs.lever.co")
-    session.close()
+
     # Uncomment this to not hardcode:
     # commitment = input("Desired commitment: ")
     # position = input("Desired position: ")
@@ -45,7 +37,7 @@ if __name__ == "__main__":
 
     # TODO: Generalize this for all ATS
     session = createSession()
-    i=0
+    # i=0 # For testing
     for companyName in leverCompanyNames:
         print("Extracting job postings from " + companyName + "...")
         jobPostList = WebScraper().listJobPosts(companyName)  # This is for Lever only
@@ -58,10 +50,9 @@ if __name__ == "__main__":
 
         print(companyDetails[companyName])
         print("Extraction complete for " + companyName + "!")
-        i += 1
-        if i % 10 == 0:
-            break
-    session.close()
+        # i += 1
+        # if i % 10 == 0:
+        #     break
     
     filteredCompanyDetails.extend(WebScraper().filterCompany(session, commitment, title))
     

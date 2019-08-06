@@ -106,7 +106,7 @@ class LeverAgent(Agent):
 
     """
 
-    def answerAdditional(self, question, inputAnswer, userData, "userdata.json"):
+    def answerAdditional(self, question, inputAnswer, userData):
         validAdditionalAnswer = ""
         additionalAnswers = []
         if len(inputAnswer) > 1:
