@@ -6,7 +6,7 @@ import json
 from jobPost import JobPost
 from models import Company, CompanyJobs
 from createEngine import createSession
-
+from geomapping import convertToCoordinates
 
 
 class WebScraper:
@@ -77,7 +77,7 @@ class WebScraper:
     def scrapeJobPosts(self, session, companyName):
         jobPostList = self.listJobPosts(companyName)
         for item in jobPostList:
-            CompanyJobs(company_name=companyName, commitment=item.commitment, department=item.department, location=item.location, team=item.team, title=item.title, apply_url=item.applyUrl).insert(session)
+            CompanyJobs(company_name=companyName, commitment=item.commitment, department=item.department, location=convertToCoordinates(item.location), team=item.team, title=item.title, apply_url=item.applyUrl).insert(session)
             session.commit()
         print("Completed database input for job listings from " + companyName)
 

@@ -32,6 +32,7 @@ if __name__ == "__main__":
     # Uncomment this to not hardcode:
     # commitment = input("Desired commitment: ")
     # position = input("Desired position: ")
+    # location = input("Desired location: ")
     # Hardcoded:
     commitment = "Intern"
     title = "Software"
