@@ -49,7 +49,7 @@ class WebScraper:
             except:
                 print("Error adding details to database for: " + url)
                 print(r.group(1) + " already exists in the table.")
-                pass
+                session.rollback()
         session.commit()
         session.close()
 
@@ -77,7 +77,7 @@ class WebScraper:
     def scrapeJobPosts(self, session, companyName):
         jobPostList = self.listJobPosts(companyName)
         for item in jobPostList:
-            CompanyJobs(company_name=companyName, commitment=item.commitment, department=item.department, location=convertToCoordinates(item.location), team=item.team, title=item.title, apply_url=item.applyUrl).insert(session)
+            CompanyJobs(company_name=companyName, commitment=item.commitment, department=item.department, coordinates=convertToCoordinates(item.location),  location=item.location, team=item.team, title=item.title, apply_url=item.applyUrl).insert(session)
             session.commit()
         print("Completed database input for job listings from " + companyName)
 

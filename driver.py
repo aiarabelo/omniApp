@@ -16,14 +16,15 @@ if __name__ == "__main__":
     # Lists details of the job posting: commitment, title, and applyUrl
     companyDetails = {}
     filteredCompanyDetails = []
+
+    session = createSession()
         
     """
     FUNCTION: Creates "companies" and "job_listings" tables 
     Uncomment this to scrape company names. 
     """
-    session = createSession()
-    # for atsURL in atsURLs:
-    #     WebScraper().getCompanyInfo(atsURL)
+    for atsURL in atsURLs:
+        WebScraper().getCompanyInfo(atsURL)
 
     
     # Hardcoded: Getting company names off the ATS
@@ -36,6 +37,7 @@ if __name__ == "__main__":
     # Hardcoded:
     commitment = "Intern"
     title = "Software"
+    location = "San Francisco"
         
     """
     FUNCTION: Scrapes company job listings  
@@ -43,18 +45,18 @@ if __name__ == "__main__":
     """
     # TODO: Generalize this for all ATS
     # i=0 # For testing
-    # for companyName in leverCompanyNames:
-    #     print("Extracting job postings from " + companyName + "...")
-    #     jobPostList = WebScraper().listJobPosts(companyName)  # This is for Lever only
-    #     try:
-    #         companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
-    #         WebScraper().scrapeJobPosts(session, companyName)
-    #     except:
-    #         print("Error for extracting details from " + companyName)
-    #         pass
+    for companyName in leverCompanyNames:
+        print("Extracting job postings from " + companyName + "...")
+        jobPostList = WebScraper().listJobPosts(companyName)  # This is for Lever only
+        try:
+            companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
+            WebScraper().scrapeJobPosts(session, companyName)
+        except:
+            print("Error for extracting details from " + companyName)
+            pass
 
-    #     print(companyDetails[companyName])
-    #     print("Extraction complete for " + companyName + "!")
+        print(companyDetails[companyName])
+        print("Extraction complete for " + companyName + "!")
         # i += 1
         # if i % 10 == 0:
         #     break
@@ -75,22 +77,22 @@ if __name__ == "__main__":
 
     # Fill out the job applications' easy questions
     # TODO: Clear textbox before sending keys, items should correspond to database entries
-    for item in filteredCompanyDetails:
-        leverCrawler = LeverAgent(False, "./chromedriver.exe")
-        print("Applying to " + item + "...")
-        try:
-            leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item), userData)
-        except:
-            print(
-                "Error in application for "
-                + session.query(CompanyJobs.company_name)[0]
-                + ": "
-                + session.query(CompanyJobs.title)[0]
-                + " ("
-                + session.query(CompanyJobs.commitment)[0]
-                + ")."
-            )
-            pass
-        time.sleep(60)
+    # for item in filteredCompanyDetails:
+    #     leverCrawler = LeverAgent(False, "./chromedriver.exe")
+    #     print("Applying to " + item + "...")
+    #     try:
+    #         leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item), userData)
+    #     except:
+    #         print(
+    #             "Error in application for "
+    #             + session.query(CompanyJobs.company_name)[0]
+    #             + ": "
+    #             + session.query(CompanyJobs.title)[0]
+    #             + " ("
+    #             + session.query(CompanyJobs.commitment)[0]
+    #             + ")."
+    #         )
+    #         pass
+    #     time.sleep(60)
     session.close()
     
