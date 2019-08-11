@@ -79,7 +79,7 @@ class LeverAgent(Agent):
             textareaAnswer = questionPair[key].find_elements_by_tag_name("textarea")
 
             if key not in userData.keys():
-                self.answerAdditional(key, inputAnswer, userData, "userdata.json")
+                self.answerAdditional(key, inputAnswer, userData)
             self.pageInteract(
                 key,
                 inputAnswer,
@@ -217,6 +217,8 @@ class LeverAgent(Agent):
         continueIndicator,
     ):
         if len(inputAnswer) == 1:
+            time.sleep(1)
+            inputAnswer[0].clear()
             inputAnswer[0].send_keys(userData[question])
         elif len(inputAnswer) > 1:
             inputType = inputAnswer[0].get_attribute("type")

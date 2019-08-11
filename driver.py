@@ -19,10 +19,11 @@ if __name__ == "__main__":
         
     """
     FUNCTION: Creates "companies" and "job_listings" tables 
+    Uncomment this to scrape company names. 
     """
     session = createSession()
-    for atsURL in atsURLs:
-        WebScraper().getCompanyInfo(atsURL)
+    # for atsURL in atsURLs:
+    #     WebScraper().getCompanyInfo(atsURL)
 
     
     # Hardcoded: Getting company names off the ATS
@@ -34,28 +35,33 @@ if __name__ == "__main__":
     # Hardcoded:
     commitment = "Intern"
     title = "Software"
-
+        
+    """
+    FUNCTION: Scrapes company job listings  
+    Uncomment this to scrape job listings per company. 
+    """
     # TODO: Generalize this for all ATS
-    session = createSession()
     # i=0 # For testing
-    for companyName in leverCompanyNames:
-        print("Extracting job postings from " + companyName + "...")
-        jobPostList = WebScraper().listJobPosts(companyName)  # This is for Lever only
-        try:
-            companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
-            WebScraper().scrapeJobPosts(session, companyName)
-        except:
-            print("Error for extracting details from " + companyName)
-            pass
+    # for companyName in leverCompanyNames:
+    #     print("Extracting job postings from " + companyName + "...")
+    #     jobPostList = WebScraper().listJobPosts(companyName)  # This is for Lever only
+    #     try:
+    #         companyDetails[companyName] = [[item.commitment, item.title, item.applyUrl, companyName] for item in jobPostList]
+    #         WebScraper().scrapeJobPosts(session, companyName)
+    #     except:
+    #         print("Error for extracting details from " + companyName)
+    #         pass
 
-        print(companyDetails[companyName])
-        print("Extraction complete for " + companyName + "!")
+    #     print(companyDetails[companyName])
+    #     print("Extraction complete for " + companyName + "!")
         # i += 1
         # if i % 10 == 0:
         #     break
     
-    filteredCompanyDetails.extend(WebScraper().filterCompany(session, commitment, title))
-    
+    try: 
+        filteredCompanyDetails.extend(WebScraper().filterCompany(session, commitment, title))
+    except: 
+        print("Duplicate entry. Skipping...")
     # Filters out what we want for the job commitment and title from the dictionary "companyDetails"
     print("Filtered! Here is what's left:")
     print(filteredCompanyDetails)
