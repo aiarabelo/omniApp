@@ -23,8 +23,8 @@ if __name__ == "__main__":
     FUNCTION: Creates "companies" and "job_listings" tables 
     Uncomment this to scrape company names. 
     """
-    for atsURL in atsURLs:
-        WebScraper().getCompanyInfo(atsURL)
+    # for atsURL in atsURLs:
+    #     WebScraper().getCompanyInfo(atsURL)
 
     
     # Hardcoded: Getting company names off the ATS
@@ -53,7 +53,6 @@ if __name__ == "__main__":
             WebScraper().scrapeJobPosts(session, companyName)
         except:
             print("Error for extracting details from " + companyName)
-            pass
 
         print(companyDetails[companyName])
         print("Extraction complete for " + companyName + "!")
