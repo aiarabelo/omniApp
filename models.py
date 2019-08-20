@@ -40,6 +40,7 @@ class CompanyJobs(Base):
   commitment = Column('commitment', String)
   department = Column('department', String)
   location = Column('location', String)
+  coordinates = Column('coordinates', String)
   team = Column('team', String)
   title = Column('title', String)
   apply_url = Column('apply_url', String, unique=True)

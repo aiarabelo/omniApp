@@ -23,8 +23,8 @@ if __name__ == "__main__":
   FUNCTION: Creates "companies" and "job_listings" tables 
   Uncomment this to scrape company names. 
   """
-  for atsURL in atsURLs:
-    WebScraper().getCompanyInfo(atsURL)
+  # for atsURL in atsURLs:
+  #     WebScraper().getCompanyInfo(atsURL)
 
   
   # Hardcoded: Getting company names off the ATS
@@ -78,21 +78,21 @@ if __name__ == "__main__":
   # Fill out the job applications' easy questions
   # TODO: Clear textbox before sending keys, items should correspond to database entries
   # for item in filteredCompanyDetails:
-    leverCrawler = LeverAgent(False, "./chromedriver.exe")
-    print("Applying to " + item + "...")
-    try:
-      leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item), userData)
-    except:
-      print(
-        "Error in application for "
-        + session.query(CompanyJobs.company_name)[0]
-        + ": "
-        + session.query(CompanyJobs.title)[0]
-        + " ("
-        + session.query(CompanyJobs.commitment)[0]
-        + ")."
-      )
-      pass
-    time.sleep(60)
+  leverCrawler = LeverAgent(False, "./chromedriver.exe")
+  print("Applying to " + item + "...")
+  try:
+    leverCrawler.autoInputQuestion(leverCrawler.getQuestionDict(item), userData)
+  except:
+    print(
+      "Error in application for "
+      + session.query(CompanyJobs.company_name)[0]
+      + ": "
+      + session.query(CompanyJobs.title)[0]
+      + " ("
+      + session.query(CompanyJobs.commitment)[0]
+      + ")."
+    )
+    pass
+  time.sleep(60)
   session.close()
   
